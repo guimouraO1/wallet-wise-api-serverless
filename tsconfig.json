@@ -1,22 +1,14 @@
 {
   "compilerOptions": {
-    "lib": ["es2023"],
-    "types": ["vitest/importMeta"],
-    "target": "es2022",
-    "module": "nodenext",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "rootDir": "./",
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "dist",
+    "rootDir": ".",
     "strict": true,
-    "skipLibCheck": true,
-    "moduleResolution": "node16",
+    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"] }
   },
-  "include": ["src/**/*", "api/**/*"]
+  "include": ["src", "api"]
 }

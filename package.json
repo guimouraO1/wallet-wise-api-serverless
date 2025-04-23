@@ -8,7 +8,8 @@
   "scripts": {
     "start": "tsx watch src/server.ts",
     "build": "tsup src/server.ts",
-    "test": "vitest --dir src/services"
+    "test": "vitest --dir src/services",
+    "vercel-build": "prisma generate && prisma migrate deploy && npm run build"
   },
   "author": "guimoura.oliveira@gmail.com",
   "license": "ISC",
