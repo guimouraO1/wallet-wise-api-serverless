@@ -1,4 +1,4 @@
-import { FindManyTransactionsSchemaType } from '@/utils/schemas/transactions/find-many-transactions-schema';
+import { FindManyTransactionsSchemaType } from '../../utils/schemas/transactions/find-many-transactions-schema';
 import { prisma } from '../../utils/lib/prisma';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../transaction-repository';
 
