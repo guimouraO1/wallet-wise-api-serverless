@@ -1,4 +1,4 @@
-import { FindManyTransactionsSchemaType } from '@/utils/schemas/transactions/find-many-transactions-schema';
+import { FindManyTransactionsSchemaType } from '../utils/schemas/transactions/find-many-transactions-schema';
 
 export type TransactionType = 'withdraw' | 'deposit';
 export type PaymentMethod = 'credit_card' | 'debit_card' | 'account_cash' | 'pix' | 'other';

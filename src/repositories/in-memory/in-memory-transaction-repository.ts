@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { Transaction, TransactionCreateInput, TransactionRepository } from '../transaction-repository';
-import { FindManyTransactionsSchemaType } from '@/utils/schemas/transactions/find-many-transactions-schema';
+import { FindManyTransactionsSchemaType } from '../../utils/schemas/transactions/find-many-transactions-schema';
 
 export class InMemoryTransactionRepository implements TransactionRepository {
     public items: Transaction[] = [];

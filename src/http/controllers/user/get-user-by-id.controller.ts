@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { userFactory } from '@/services/factories/user.factory';
+import { userFactory } from '../../../services/factories/user.factory';
 import { StatusCodes } from 'http-status-codes';
-import logger from '@/utils/lib/logger';
-import { UserNotFoundError } from '@/utils/errors/user-not-found-error';
-import { UserIdParamZod } from '@/utils/schemas/user-id-param';
+import logger from '../../../utils/lib/logger';
+import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
+import { UserIdParamZod } from '../../../utils/schemas/user-id-param';
 
 const filename = __filename.split(/[/\\]/).pop();
 

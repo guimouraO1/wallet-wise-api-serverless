@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import logger from '@/utils/lib/logger';
-import { BillCreateInput } from '@/utils/schemas/bills/create-bill-schema';
-import { AccountNotFoundError } from '@/utils/errors/account-not-found-error';
+import logger from '../../../utils/lib/logger';
+import { BillCreateInput } from '../../../utils/schemas/bills/create-bill-schema';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { StatusCodes } from 'http-status-codes';
-import { BillFactory } from '@/services/factories/bill.factory';
+import { BillFactory } from '../../../services/factories/bill.factory';
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function createBill(request: FastifyRequest, reply: FastifyReply) {

@@ -1,13 +1,13 @@
-import { FastifyTypedInstance } from '@/@types/fastify-type';
+import { FastifyTypedInstance } from '../../../@types/fastify-type';
 import { signIn } from './sign-in.controller';
-import { AuthenticateRequestBodyZod } from '@/utils/schemas/auth/sign-in.schema';
-import { TokenResponseSchema } from '@/utils/schemas/token-schema';
-import { BadRequestSchema } from '@/utils/schemas/errors/bad-request-schema';
-import { InternalServerErrorSchema } from '@/utils/schemas/errors/internal-server-error-schema';
-import { UnauthorizedSchema } from '@/utils/schemas/errors/unauthorized-schema';
 import { refreshToken } from './refresh-token.controller';
 import { signOut } from './sign-out.controller';
-import { SignOutResponseSchema } from '@/utils/schemas/auth/sign-out-schema';
+import { AuthenticateRequestBodyZod } from 'src/utils/schemas/auth/sign-in.schema';
+import { SignOutResponseSchema } from 'src/utils/schemas/auth/sign-out-schema';
+import { BadRequestSchema } from 'src/utils/schemas/errors/bad-request-schema';
+import { InternalServerErrorSchema } from 'src/utils/schemas/errors/internal-server-error-schema';
+import { UnauthorizedSchema } from 'src/utils/schemas/errors/unauthorized-schema';
+import { TokenResponseSchema } from 'src/utils/schemas/token-schema';
 
 export async function authRoutes(app: FastifyTypedInstance) {
     app.post('/sign-in',

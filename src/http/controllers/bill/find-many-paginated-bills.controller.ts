@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import logger from '@/utils/lib/logger';
-import { AccountNotFoundError } from '@/utils/errors/account-not-found-error';
+import logger from '../../../utils/lib/logger';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { StatusCodes } from 'http-status-codes';
-import { BillFactory } from '@/services/factories/bill.factory';
-import { FindManyBillsInput, FindManyBillsInputString } from '@/repositories/bill-repository';
-import { AccountIdParam } from '@/utils/schemas/account-id-param';
+import { BillFactory } from '../../../services/factories/bill.factory';
+import { FindManyBillsInput, FindManyBillsInputString } from '../../../repositories/bill-repository';
+import { AccountIdParam } from '../../../utils/schemas/account-id-param';
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function findManyPaginatedBills(request: FastifyRequest, reply: FastifyReply) {

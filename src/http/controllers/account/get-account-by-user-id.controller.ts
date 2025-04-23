@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '@/utils/lib/logger';
-import { accountFactory } from '@/services/factories/account.factory';
-import { UserIdParamZod } from '@/utils/schemas/user-id-param';
-import { UserNotFoundError } from '@/utils/errors/user-not-found-error';
-import { AccountNotFoundError } from '@/utils/errors/account-not-found-error';
+import logger from '../../../utils/lib/logger';
+import { accountFactory } from '../../../services/factories/account.factory';
+import { UserIdParamZod } from '../../../utils/schemas/user-id-param';
+import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 
 const filename = __filename.split(/[/\\]/).pop();
 

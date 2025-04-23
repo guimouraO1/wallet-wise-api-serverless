@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import { InvalidCredentialsError } from '@/utils/errors/invalid-credentials-error';
-import { authFactory } from '@/services/factories/auth.factory';
-import { env } from '@/utils/lib/env';
-import { AuthenticateRequestBody } from '@/utils/schemas/auth/sign-in.schema';
+import { InvalidCredentialsError } from '../../../utils/errors/invalid-credentials-error';
+import { authFactory } from '../../../services/factories/auth.factory';
+import { env } from '../../../utils/lib/env';
+import { AuthenticateRequestBody } from '../../../utils/schemas/auth/sign-in.schema';
 import { StatusCodes } from 'http-status-codes';
-import logger from '@/utils/lib/logger';
+import logger from '../../../utils/lib/logger';
 
 const filename = __filename.split(/[/\\]/).pop();
 

@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import logger from '@/utils/lib/logger';
+import logger from '../../../utils/lib/logger';
 import { StatusCodes } from 'http-status-codes';
-import { BillFactory } from '@/services/factories/bill.factory';
-import { DeleteBillParams } from '@/utils/schemas/bills/delete-bill';
+import { BillFactory } from '../../../services/factories/bill.factory';
+import { DeleteBillParams } from '../../../utils/schemas/bills/delete-bill';
 
 const filename = __filename.split(/[/\\]/).pop();
 

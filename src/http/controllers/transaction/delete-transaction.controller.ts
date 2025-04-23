@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '@/utils/lib/logger';
-import { transactionFactory } from '@/services/factories/transaction.factory';
-import { DeleteTransactionParams } from '@/utils/schemas/transactions/delete-transaction';
+import logger from '../../../utils/lib/logger';
+import { transactionFactory } from '../../../services/factories/transaction.factory';
+import { DeleteTransactionParams } from '../../../utils/schemas/transactions/delete-transaction';
 
 const filename = __filename.split(/[/\\]/).pop();
 

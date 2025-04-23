@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { env } from '@/utils/lib/env';
+import { env } from '../utils/lib/env';
 import { FastifyReply, FastifyRequest } from 'fastify';
 
 export function errorHandler(error: any, request: FastifyRequest, reply: FastifyReply) {

@@ -2,7 +2,7 @@ import { hash } from 'bcryptjs';
 import { UsersRepository } from '../repositories/users-repository';
 import { PASSWORD_HASH_ROUNDS } from '../utils/constants/password-hash-rounds.constant';
 import { UserAlreadyExistsError } from '../utils/errors/user-already-exists-error';
-import { CreateUserRequestSchemaType } from '@/utils/schemas/user/create-user-schema';
+import { CreateUserRequestSchemaType } from '../utils/schemas/user/create-user-schema';
 import { UserNotFoundError } from '../utils/errors/user-not-found-error';
 import { AccountRepository } from '../repositories/account-repository';
 import { CreateUserError } from '../utils/errors/create-user-error';

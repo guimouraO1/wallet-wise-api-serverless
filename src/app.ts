@@ -1,5 +1,5 @@
 import { fastify } from 'fastify';
-import { env } from '@/utils/lib/env';
+import { env } from './utils/lib/env';
 import { fastifyJwt } from '@fastify/jwt';
 import { fastifyCookie } from '@fastify/cookie';
 import { fastifyCors } from '@fastify/cors';

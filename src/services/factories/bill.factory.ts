@@ -1,7 +1,7 @@
-import { PrismaAccountRepository } from '@/repositories/prisma/prisma-account-repository';
-import { PrismaBillRepository } from '@/repositories/prisma/prisma-bill-repository';
+import { PrismaAccountRepository } from '../../repositories/prisma/prisma-account-repository';
+import { PrismaBillRepository } from '../../repositories/prisma/prisma-bill-repository';
 import { BillService } from '../bill.service';
-import { PrismaTransactionRepository } from '@/repositories/prisma/prisma-transaction-repository';
+import { PrismaTransactionRepository } from '../../repositories/prisma/prisma-transaction-repository';
 
 export function BillFactory() {
     const billRepository = new PrismaBillRepository();

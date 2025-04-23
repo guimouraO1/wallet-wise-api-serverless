@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '@/utils/lib/logger';
-import { AccountIdParam } from '@/utils/schemas/account-id-param';
-import { AccountNotFoundError } from '@/utils/errors/account-not-found-error';
-import { userFactory } from '@/services/factories/user.factory';
+import logger from '../../utils/lib/logger';
+import { AccountIdParam } from '../../utils/schemas/account-id-param';
+import { AccountNotFoundError } from '../../utils/errors/account-not-found-error';
+import { userFactory } from '../../services/factories/user.factory';
 
 const filename = __filename.split(/[/\\]/).pop();
 

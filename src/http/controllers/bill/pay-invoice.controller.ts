@@ -1,11 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import logger from '@/utils/lib/logger';
+import logger from '../../../utils/lib/logger';
 import { StatusCodes } from 'http-status-codes';
-import { BillFactory } from '@/services/factories/bill.factory';
-import { AccountNotFoundError } from '@/utils/errors/account-not-found-error';
-import { NotFoundError } from '@/utils/errors/not-found-error';
-import { BillAlreadyPaid } from '@/utils/errors/bill-already-paid-error';
-import { PayInvoiceParams } from '@/utils/schemas/bills/pay-invoice';
+import { BillFactory } from '../../../services/factories/bill.factory';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import { NotFoundError } from '../../../utils/errors/not-found-error';
+import { BillAlreadyPaid } from '../../../utils/errors/bill-already-paid-error';
+import { PayInvoiceParams } from '../../../utils/schemas/bills/pay-invoice';
 
 const filename = __filename.split(/[/\\]/).pop();
 

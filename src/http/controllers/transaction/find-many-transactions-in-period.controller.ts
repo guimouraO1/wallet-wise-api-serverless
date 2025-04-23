@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import { transactionFactory } from '@/services/factories/transaction.factory';
-import { AccountNotFoundError } from '@/utils/errors/account-not-found-error';
-import logger from '@/utils/lib/logger';
-import { AccountIdParam } from '@/utils/schemas/account-id-param';
-import { FindManyInPeriodTransactionsQueryParams } from '@/utils/schemas/transactions/find-many-in-period-transactions-schema';
+import { transactionFactory } from '../../../services/factories/transaction.factory';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import logger from '../../../utils/lib/logger';
+import { AccountIdParam } from '../../../utils/schemas/account-id-param';
+import { FindManyInPeriodTransactionsQueryParams } from '../../../utils/schemas/transactions/find-many-in-period-transactions-schema';
 
 const filename = __filename.split(/[/\\]/).pop();
 
