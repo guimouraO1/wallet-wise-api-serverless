@@ -1,0 +1,129 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  standard
+}
+
+enum TransactionType {
+  deposit
+  withdraw
+}
+
+enum PaymentMethod {
+  credit_card
+  debit_card
+  account_cash
+  pix
+  other
+}
+
+enum BillType {
+  recurring
+  installment
+}
+
+enum BillFrequency {
+  monthly
+  weekly
+  annual
+}
+
+enum TokenType {
+  verify_email
+  sign_in
+}
+
+model User {
+  id                     String   @id @default(uuid())
+  name                   String
+  email                  String   @unique
+  password               String
+  role                   Role     @default(standard)
+  created_at             DateTime @default(now())
+  updated_at             DateTime @default(now())
+  avatarUrl              String?
+  email_already_verifyed Boolean  @default(false)
+
+  Account Account[]
+  Token   Token[]
+
+  @@map("users")
+}
+
+model Account {
+  id        String   @id @default(uuid())
+  balance   Float    @default(0.0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  userId    String   @unique
+
+  user User @relation(fields: [userId], references: [id])
+
+  transactions Transaction[]
+  Bill         Bill[]
+
+  @@map("accounts")
+}
+
+model Transaction {
+  id            String          @id @default(uuid())
+  name          String
+  description   String?
+  amount        Float
+  type          TransactionType
+  paymentMethod PaymentMethod
+  accountId     String
+  account       Account         @relation(fields: [accountId], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now())
+  deleted       Boolean         @default(false)
+
+  @@map("transactions")
+}
+
+model Bill {
+  id               String        @id @default(uuid())
+  name             String
+  description      String?
+  amount           Float
+  billType         BillType
+  dueDay           Int?
+  frequency        BillFrequency
+  installments     Int?
+  paidInstallments Int           @default(0)
+  active           Boolean       @default(true)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now())
+  deleted          Boolean       @default(false)
+
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id])
+
+  @@map("bills")
+}
+
+model Token {
+  id        String    @id @default(cuid())
+  type      TokenType
+  createdAt DateTime  @default(now())
+  token     String    @unique
+  email     String?
+
+  userEmail User? @relation(fields: [email], references: [email])
+
+  @@map("tokens")
+}
