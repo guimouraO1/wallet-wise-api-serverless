@@ -1,5 +1,5 @@
 
-import { YouAreNotElonCap } from 'src/utils/errors/elon-error';
+import { YouAreNotElonCap } from '../utils/errors/elon-error';
 import { AccountRepository } from '../repositories/account-repository';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../repositories/transaction-repository';
 import { AccountNotFoundError } from '../utils/errors/account-not-found-error';
