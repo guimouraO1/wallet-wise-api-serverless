@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
 export const FindManyBillsInputZod = z.object({
-    page: z.string().regex(/^\d+$/),
+    page: z.string().regex(/^\d+$/).max(10000),
     offset: z.enum(['5', '10', '25']),
-    name: z.string().min(1).optional(),
+    name: z.string().min(1).max(100).optional(),
     active: z.string().optional(),
     billType: z.enum(['recurring', 'installment']).optional(),
     frequency: z.enum(['monthly', 'weekly', 'annual']).optional()
