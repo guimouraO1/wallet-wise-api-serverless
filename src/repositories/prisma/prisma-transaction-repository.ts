@@ -1,9 +1,9 @@
-import { FindManyTransactionsSchemaType } from '../../utils/schemas/transactions/find-many-transactions-schema';
+import { GetPaginatedTransactionsInternalType } from 'src/utils/schemas/internal/transactions/get-paginated-transactions.schema';
 import { prisma } from '../../utils/lib/prisma';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../transaction-repository';
 
 export class PrismaTransactionRepository implements TransactionRepository {
-    async findManyByAccountId(data: FindManyTransactionsSchemaType) {
+    async getByAccountId(data: GetPaginatedTransactionsInternalType) {
         const whereClause = {
             accountId: data.accountId,
             deleted: false,
@@ -33,7 +33,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async findManyInPeriodByAccountId(accountId: string, startDate: Date, endDate: Date) {
+    async getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date) {
         const whereClause = {
             accountId,
             deleted: false,

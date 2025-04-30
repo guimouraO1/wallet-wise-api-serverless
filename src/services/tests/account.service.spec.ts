@@ -46,7 +46,7 @@ describe('Account Service', () => {
 
     it('should be able to search account', async () => {
         await sut.create(user.id);
-        const account = await sut.findAccountByUserId(user.id);
+        const account = await sut.getAccountByUserId(user.id);
 
         expect(account).toEqual(expect.any(Object));
         expect(account?.id).toEqual(expect.any(String));
@@ -55,6 +55,6 @@ describe('Account Service', () => {
     });
 
     it('should not be able to search account if account do not exists', async () => {
-        await expect(() => sut.findAccountByUserId(user.id)).rejects.toBeInstanceOf(AccountNotFoundError);
+        await expect(() => sut.getAccountByUserId(user.id)).rejects.toBeInstanceOf(AccountNotFoundError);
     });
 });

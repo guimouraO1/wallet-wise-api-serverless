@@ -1,13 +1,13 @@
 import { User, UsersRepository } from '../repositories/users-repository';
 import { InvalidCredentialsError } from '../utils/errors/invalid-credentials-error';
 import { compare } from 'bcryptjs';
-import { AuthenticateRequestBody } from '../utils/schemas/auth/sign-in.schema';
+import { SignInBodyType } from '../utils/schemas/request/auth/sign-in.schema';
 
 export class AuthService {
     constructor(private usersRepository: UsersRepository) {}
 
-    async authenticate({ email, password }: AuthenticateRequestBody): Promise<User> {
-        const user = await this.usersRepository.findByEmail(email);
+    async signIn({ email, password }: SignInBodyType): Promise<User> {
+        const user = await this.usersRepository.getByEmail(email);
 
         if (!user) {
             throw new InvalidCredentialsError();

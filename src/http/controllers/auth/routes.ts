@@ -2,12 +2,12 @@ import { FastifyTypedInstance } from '../../../@types/fastify-type';
 import { signIn } from './sign-in.controller';
 import { refreshToken } from './refresh-token.controller';
 import { signOut } from './sign-out.controller';
-import { AuthenticateRequestBodyZod } from '../../../utils/schemas/auth/sign-in.schema';
-import { SignOutResponseSchema } from '../../../utils/schemas/auth/sign-out-schema';
-import { BadRequestSchema } from '../../../utils/schemas/errors/bad-request-schema';
-import { InternalServerErrorSchema } from '../../../utils/schemas/errors/internal-server-error-schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/errors/unauthorized-schema';
-import { TokenResponseSchema } from '../../../utils/schemas/token-schema';
+import { SignInBody } from '../../../utils/schemas/request/auth/sign-in.schema';
+import { SignOutResponse } from '../../../utils/schemas/responses/auth/sign-out.schema';
+import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
+import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
+import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
+import { TokenResponseSchema } from '../../../utils/schemas/responses/auth/token.schema';
 
 export async function authRoutes(app: FastifyTypedInstance) {
     app.post('/sign-in',
@@ -15,7 +15,7 @@ export async function authRoutes(app: FastifyTypedInstance) {
             schema: {
                 description: 'Sign In',
                 tags: ['Auth'],
-                body: AuthenticateRequestBodyZod,
+                body: SignInBody,
                 response: {
                     200: TokenResponseSchema.describe('Authenticated'),
                     400: BadRequestSchema,
@@ -33,7 +33,7 @@ export async function authRoutes(app: FastifyTypedInstance) {
                 description: 'Sign out',
                 tags: ['Auth'],
                 response: {
-                    200: SignOutResponseSchema,
+                    200: SignOutResponse.describe('Successfully sign-out'),
                     401: UnauthorizedSchema,
                     500: InternalServerErrorSchema
                 }

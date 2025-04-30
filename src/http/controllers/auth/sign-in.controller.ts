@@ -2,19 +2,19 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { InvalidCredentialsError } from '../../../utils/errors/invalid-credentials-error';
 import { authFactory } from '../../../services/factories/auth.factory';
 import { env } from '../../../utils/lib/env';
-import { AuthenticateRequestBody } from '../../../utils/schemas/auth/sign-in.schema';
+import { SignInBodyType } from '../../../utils/schemas/request/auth/sign-in.schema';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../../utils/lib/logger';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function signIn(request: FastifyRequest, reply: FastifyReply) {
-    const { email, password } = request.body as AuthenticateRequestBody;
+    const { email, password } = request.body as SignInBodyType;
     logger.info(`${filename} -> Initiating sign-in process for email: ${email}`);
 
     try {
         const authService = authFactory();
-        const user = await authService.authenticate({ email, password });
+        const user = await authService.signIn({ email, password });
         logger.info(`${filename} -> Authentication successful for user ${user.id}`);
 
         const token = await reply.jwtSign({ role: user.role }, { sign: { sub: user.id } });

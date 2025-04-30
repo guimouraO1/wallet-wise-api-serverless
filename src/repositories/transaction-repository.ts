@@ -1,4 +1,4 @@
-import { FindManyTransactionsSchemaType } from '../utils/schemas/transactions/find-many-transactions-schema';
+import { GetPaginatedTransactionsInternalType } from 'src/utils/schemas/internal/transactions/get-paginated-transactions.schema';
 
 export type TransactionType = 'withdraw' | 'deposit';
 export type PaymentMethod = 'credit_card' | 'debit_card' | 'account_cash' | 'pix' | 'other';
@@ -31,7 +31,7 @@ export type TransactionCreateInput = {
 
 export interface TransactionRepository {
     create(data: TransactionCreateInput): Promise<Transaction>;
-    findManyByAccountId(data: FindManyTransactionsSchemaType): Promise<TransactionsAndCount>;
-    findManyInPeriodByAccountId(accountId: string, startDate: Date, endDate: Date): Promise<TransactionsAndCount>;
+    getByAccountId(data: GetPaginatedTransactionsInternalType): Promise<TransactionsAndCount>;
+    getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date): Promise<TransactionsAndCount>;
     delete(transactionId: string): Promise<Transaction | null>;
 }

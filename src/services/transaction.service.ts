@@ -1,21 +1,27 @@
 
+import { YouAreNotElonCap } from 'src/utils/errors/elon-error';
 import { AccountRepository } from '../repositories/account-repository';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../repositories/transaction-repository';
 import { AccountNotFoundError } from '../utils/errors/account-not-found-error';
 import { UpdateAccountError } from '../utils/errors/update-account-error';
-import { FindManyTransactionsSchemaType } from '../utils/schemas/transactions/find-many-transactions-schema';
 import { DateTime } from 'luxon';
+import { GetPaginatedTransactionsInternalType } from 'src/utils/schemas/internal/transactions/get-paginated-transactions.schema';
+import { TIMEZONE } from 'src/utils/constants/timezone';
 
 export class TransactionService {
     constructor(private transactionRepository: TransactionRepository, private accountRepository: AccountRepository)  {}
 
     async create(data: TransactionCreateInput): Promise<Transaction> {
-        const accountExists = await this.accountRepository.findByAccountId(data.accountId);
+        const accountExists = await this.accountRepository.getByAccountId(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
 
-        await this.accountRepository.updateAccount({ accountId: data.accountId, amount: data.amount, type: data.type }).catch(() => {
+        if(accountExists.balance >= 10_000_000_000) {
+            throw new YouAreNotElonCap();
+        }
+
+        await this.accountRepository.update({ accountId: data.accountId, amount: data.amount, type: data.type }).catch(() => {
             throw new UpdateAccountError();
         });
 
@@ -24,28 +30,26 @@ export class TransactionService {
         return transaction;
     }
 
-    async findManyByAccountId(data: FindManyTransactionsSchemaType): Promise<TransactionsAndCount> {
-        const accountExists = await this.accountRepository.findByAccountId(data.accountId);
+    async getByAccountId(data: GetPaginatedTransactionsInternalType): Promise<TransactionsAndCount> {
+        const accountExists = await this.accountRepository.getByAccountId(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
 
-        const transactions = await this.transactionRepository.findManyByAccountId(data);
+        const transactions = await this.transactionRepository.getByAccountId(data);
         return transactions;
     }
 
-    async findManyInPeriodByAccountId(accountId: string, startDate: string, endDate: string): Promise<TransactionsAndCount> {
-        const accountExists = await this.accountRepository.findByAccountId(accountId);
+    async getByAccountIdInPeriod(accountId: string, startDate: string, endDate: string): Promise<TransactionsAndCount> {
+        const accountExists = await this.accountRepository.getByAccountId(accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
-
-        const TIMEZONE = 'America/Sao_Paulo';
 
         const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
         const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
 
-        const transactions = await this.transactionRepository.findManyInPeriodByAccountId(accountId, startDateFormated, endDateFormated);
+        const transactions = await this.transactionRepository.getByAccountIdInPeriod(accountId, startDateFormated, endDateFormated);
         return transactions;
     }
 

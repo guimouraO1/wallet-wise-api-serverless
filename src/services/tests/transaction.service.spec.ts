@@ -42,7 +42,7 @@ describe('Transaction Service', () => {
         expect(transaction.type).toEqual('deposit');
         expect(transaction.paymentMethod).toEqual('pix');
 
-        const accountAfterTransaction = await accountRepository.findByAccountId(transaction.accountId);
+        const accountAfterTransaction = await accountRepository.getByAccountId(transaction.accountId);
         expect(accountAfterTransaction?.balance).toEqual(oldBalanceValue + 10);
         expect(accountAfterTransaction?.balance).toEqual(account.balance);
     });
@@ -57,7 +57,7 @@ describe('Transaction Service', () => {
         expect(transaction.type).toEqual('withdraw');
         expect(transaction.paymentMethod).toEqual('credit_card');
 
-        const accountAfterTransaction = await accountRepository.findByAccountId(transaction.accountId);
+        const accountAfterTransaction = await accountRepository.getByAccountId(transaction.accountId);
         expect(accountAfterTransaction?.balance).toEqual(oldBalanceValue - 200.23);
     });
 
@@ -75,7 +75,7 @@ describe('Transaction Service', () => {
         await sut.create({ accountId: account.id, amount: 50, name: 'Cashback reward', paymentMethod: 'pix', type: 'deposit' });
         await sut.create({ accountId: account.id, amount: 20, name: 'Bill cashback', paymentMethod: 'pix', type: 'deposit' });
 
-        const { transactions, transactionsCount } = await transactionRepository.findManyByAccountId({ accountId: account.id, page: 2, offset: 5 });
+        const { transactions, transactionsCount } = await transactionRepository.getByAccountId({ accountId: account.id, page: 2, offset: 5 });
         expect(transactions.length).toEqual(1);
         expect(transactions[0].accountId).toEqual(account.id);
         expect(transactions[0].amount).toEqual(20);
@@ -86,6 +86,6 @@ describe('Transaction Service', () => {
 
     it('should not be able to find paginated transactions if account do not exists', async () => {
         accountRepository.items = [];
-        await expect(() => sut.findManyByAccountId({ accountId: account.id, page: 2, offset: 5 })).rejects.toBeInstanceOf(AccountNotFoundError);
+        await expect(() => sut.getByAccountId({ accountId: account.id, page: 2, offset: 5 })).rejects.toBeInstanceOf(AccountNotFoundError);
     });
 });

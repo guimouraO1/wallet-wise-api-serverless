@@ -18,19 +18,19 @@ export class InMemoryAccountsRepository implements AccountRepository {
         return account;
     }
 
-    async findByUserId(userId: string) {
+    async getByUserId(userId: string) {
         const account = this.items.find((item) => item.userId === userId);
 
         return account ?? null;
     }
 
-    async findByAccountId(accountId: string) {
+    async getByAccountId(accountId: string) {
         const account = this.items.find((item) => item.id === accountId);
 
         return account ?? null;
     }
 
-    async updateAccount(data: UpdateAccountInput) {
+    async update(data: UpdateAccountInput) {
         const index = this.items.findIndex(item => item.id === data.accountId);
 
         this.items[index].balance = data.type === 'withdraw'

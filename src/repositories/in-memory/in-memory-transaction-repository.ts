@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { Transaction, TransactionCreateInput, TransactionRepository } from '../transaction-repository';
-import { FindManyTransactionsSchemaType } from '../../utils/schemas/transactions/find-many-transactions-schema';
+import { GetPaginatedTransactionsInternalType } from 'src/utils/schemas/internal/transactions/get-paginated-transactions.schema';
 
 export class InMemoryTransactionRepository implements TransactionRepository {
     public items: Transaction[] = [];
@@ -23,7 +23,7 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return transaction;
     }
 
-    async findManyByAccountId(data: FindManyTransactionsSchemaType) {
+    async getByAccountId(data: GetPaginatedTransactionsInternalType) {
         const transactions = this.items.filter((item) => item.accountId === data.accountId).slice((data.page - 1) * data.offset, data.page * data.offset);
         const response = {
             transactionsCount: this.items.length,
@@ -32,7 +32,7 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async findManyInPeriodByAccountId(accountId: string, startDate: Date, endDate: Date) {
+    async getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date) {
         const transactions = this.items.filter((item) => item.accountId === accountId && item.createdAt >= startDate && item.createdAt <= endDate);
         const response = {
             transactionsCount: this.items.length,

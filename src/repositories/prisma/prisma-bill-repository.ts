@@ -20,7 +20,7 @@ export class PrismaBillRepository implements BillRepository {
         return bill;
     }
 
-    async findManyByAccountId(data: FindManyBillsInput) {
+    async getByAccountId(data: FindManyBillsInput) {
         const whereClause = {
             accountId: data.accountId,
             deleted: false,
@@ -67,7 +67,7 @@ export class PrismaBillRepository implements BillRepository {
         return bill;
     }
 
-    async findUnique(billId: string) {
+    async getById(billId: string) {
         const bill = await prisma.bill.findUnique({
             where: {
                 id: billId

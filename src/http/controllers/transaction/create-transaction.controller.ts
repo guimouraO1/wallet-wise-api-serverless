@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../../utils/lib/logger';
-import { TransactionCreateSchemaType } from '../../../utils/schemas/transactions/create-transaction-schema';
+import { CreateTransactionBodyType } from '../../../utils/schemas/request/transactions/create-transaction.schema';
 import { transactionFactory } from '../../../services/factories/transaction.factory';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { UpdateAccountError } from '../../../utils/errors/update-account-error';
@@ -9,7 +9,7 @@ import { UpdateAccountError } from '../../../utils/errors/update-account-error';
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function createTransaction(request: FastifyRequest, reply: FastifyReply) {
-    const data = request.body as TransactionCreateSchemaType;
+    const data = request.body as CreateTransactionBodyType;
 
     logger.info(`${filename} -> Initiating transaction - User ${request.user.sub}`);
 

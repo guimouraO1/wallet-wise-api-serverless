@@ -2,12 +2,12 @@ import { prisma } from '../../utils/lib/prisma';
 import { UserCreateInput, UsersRepository } from '../users-repository';
 
 export class PrismaUsersRepository implements UsersRepository {
-    async findById(id: string) {
+    async getById(id: string) {
         const user = await prisma.user.findUnique({ where: { id }, omit: { password: true }, include: { Account: true } });
         return user;
     }
 
-    async findByEmail(email: string) {
+    async getByEmail(email: string) {
         const user = await prisma.user.findUnique({ where: { email }, include: { Account: true } });
         return user;
     }

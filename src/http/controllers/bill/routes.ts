@@ -1,24 +1,25 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
 import { verifyJwt } from '../../../http/middlewares/verify-jwt';
 import { createBill } from './create-bill.controller';
-import { FindManyBillsInputZod, FindManyBillsResponseZod } from '../../../utils/schemas/bills/find-many-bills-schema';
-import { CreatedSchema } from '../../../utils/schemas/default-responses/created-schema';
-import { BadRequestSchema } from '../../../utils/schemas/errors/bad-request-schema';
-import { ForbiddenSchema } from '../../../utils/schemas/errors/forbidden-schema';
-import { InternalServerErrorSchema } from '../../../utils/schemas/errors/internal-server-error-schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/errors/unauthorized-schema';
-import { findManyPaginatedBills } from './find-many-paginated-bills.controller';
+import { CreatedSchema } from '../../../utils/schemas/responses/default-responses/created.schema';
+import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
+import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
+import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
+import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
+import { getPaginatedBills } from './get-paginated-bills.controller';
 import { authorizeOwnerOrAdminByAccountIdParam } from '../../../http/middlewares/authorize-by-account-id-param';
-import { BillCreateInputZod } from '../../../utils/schemas/bills/create-bill-schema';
+import { CreateBillBody } from '../../../utils/schemas/request/bills/create-bill.schema';
 import { authorizeOwnerOrAdminByAccountIdBody } from '../../../http/middlewares/authorize-by-account-id-body';
-import { AccountIdParamZod } from '../../../utils/schemas/account-id-param';
+import { AccountIdParam } from '../../../utils/schemas/request/account/account-id-param.schema';
 import { deleteBill } from './delete-bill.controller';
-import { NotFoundSchema } from '../../../utils/schemas/errors/not-found-schema';
-import { DeleteBillZod } from '../../../utils/schemas/bills/delete-bill';
-import { DeletedSchemaZod } from '../../../utils/schemas/default-responses/deleted-schema';
-import { ConflictSchema } from '../../../utils/schemas/errors/conflict-schema';
-import { PayInvoiceZod } from '../../../utils/schemas/bills/pay-invoice';
+import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
+import { DeleteBillParam } from '../../../utils/schemas/request/bills/delete-bill.schema';
+import { DeletedSchemaZod } from '../../../utils/schemas/responses/default-responses/deleted.schema';
+import { ConflictSchema } from '../../../utils/schemas/responses/errors/conflict.schema';
+import { PayInvoiceBody } from '../../../utils/schemas/request/bills/pay-invoice.schema';
 import { payInvoice } from './pay-invoice.controller';
+import { GetPaginatedBillsQuery } from 'src/utils/schemas/request/bills/get-paginated-bills.schema';
+import { GetPaginatedBillsResponse } from 'src/utils/schemas/responses/bills/get-paginated-bills.schema';
 
 export async function billRoutes(app: FastifyTypedInstance) {
     app.post('/bill',
@@ -29,7 +30,7 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Create Bill',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                body: BillCreateInputZod.describe('Create Bill Payload'),
+                body: CreateBillBody.describe('Create Bill Payload'),
                 response: {
                     201: CreatedSchema.describe('Bill Created'),
                     400: BadRequestSchema,
@@ -49,10 +50,10 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Find Many Paginated Bills',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParamZod,
-                querystring: FindManyBillsInputZod.describe('Create Bill Payload'),
+                params: AccountIdParam,
+                querystring: GetPaginatedBillsQuery.describe('Create Bill Payload'),
                 response: {
-                    200: FindManyBillsResponseZod.describe('Finded Many Bills'),
+                    200: GetPaginatedBillsResponse.describe('Finded Many Bills'),
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
                     403: ForbiddenSchema,
@@ -60,7 +61,7 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 }
             }
         },
-        findManyPaginatedBills
+        getPaginatedBills
     );
 
     app.delete('/bill/:accountId/:id',
@@ -70,7 +71,7 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Delete Bill',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                params: DeleteBillZod,
+                params: DeleteBillParam,
                 response: {
                     200: DeletedSchemaZod,
                     400: BadRequestSchema,
@@ -92,7 +93,7 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Pay invoice',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                body: PayInvoiceZod,
+                body: PayInvoiceBody,
                 response: {
                     200: CreatedSchema,
                     400: BadRequestSchema,

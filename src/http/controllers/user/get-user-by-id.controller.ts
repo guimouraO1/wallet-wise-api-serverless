@@ -3,7 +3,7 @@ import { userFactory } from '../../../services/factories/user.factory';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../../utils/lib/logger';
 import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
-import { UserIdParamZod } from '../../../utils/schemas/user-id-param';
+import { UserIdParamZod } from '../../../utils/schemas/request/user/user-id-param.schema';
 
 const filename = __filename.split(/[/\\]/).pop();
 

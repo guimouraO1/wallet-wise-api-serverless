@@ -1,14 +1,14 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../utils/lib/logger';
-import { AccountIdParam } from '../../utils/schemas/account-id-param';
+import { AccountIdParamType } from '../../utils/schemas/request/account/account-id-param.schema';
 import { AccountNotFoundError } from '../../utils/errors/account-not-found-error';
 import { userFactory } from '../../services/factories/user.factory';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function authorizeOwnerOrAdminByAccountIdParam(request: FastifyRequest, reply: FastifyReply) {
-    const data = request.params as AccountIdParam;
+    const data = request.params as AccountIdParamType;
 
     if (request.user.role === 'admin') {
         return;

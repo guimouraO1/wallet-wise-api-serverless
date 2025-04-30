@@ -77,7 +77,7 @@ describe('Bill Service Tests', () => {
     it('should not be able to find many paginated bills if account do not exists', async () => {
         accountRepository.items = [];
 
-        await expect(() => sut.findManyByAccountId({
+        await expect(() => sut.getByAccountId({
             accountId: account.id,
             page: 1,
             offset: 5

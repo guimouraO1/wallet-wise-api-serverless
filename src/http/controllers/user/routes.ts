@@ -1,19 +1,19 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
-import { BadRequestSchema } from '../../../utils/schemas/errors/bad-request-schema';
-import { InternalServerErrorSchema } from '../../../utils/schemas/errors/internal-server-error-schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/errors/unauthorized-schema';
+import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
+import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
+import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
 import { createUser } from './create-user.controller';
-import { CreatedSchema } from '../../../utils/schemas/default-responses/created-schema';
-import { ConflictSchema } from '../../../utils/schemas/errors/conflict-schema';
-import { CreateUserRequestSchema } from '../../../utils/schemas/user/create-user-schema';
-import { ForbiddenSchema } from '../../../utils/schemas/errors/forbidden-schema';
+import { CreatedSchema } from '../../../utils/schemas/responses/default-responses/created.schema';
+import { ConflictSchema } from '../../../utils/schemas/responses/errors/conflict.schema';
+import { CreateUserBody } from '../../../utils/schemas/request/user/create-user.schema';
+import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
 import { verifyJwt } from '../../../http/middlewares/verify-jwt';
-import { UserIdParam } from '../../../utils/schemas/user-id-param';
-import { NotFoundSchema } from '../../../utils/schemas/errors/not-found-schema';
+import { UserIdParam } from '../../../utils/schemas/request/user/user-id-param.schema';
+import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
 import { getUserById } from './get-user-by-id.controller';
 import { authorizeAdminOnly } from '../../../http/middlewares/authorize-admin-only';
 import { authorizeOwnerOrAdminByUserIdParam } from '../../../http/middlewares/authorize-by-user-id-param';
-import { GetUserByIdResponseZod } from '../../../utils/schemas/user/find-user-schema';
+import { GetUserByIdResponse } from '../../../utils/schemas/responses/user/find-user.schema';
 
 export async function userRoutes(app: FastifyTypedInstance) {
     app.post('/user',
@@ -23,7 +23,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
                 description: 'Create User',
                 tags: ['User'],
                 security: [{ BearerAuth: [] }],
-                body: CreateUserRequestSchema,
+                body: CreateUserBody,
                 response: {
                     201: CreatedSchema.describe('User Created'),
                     400: BadRequestSchema,
@@ -46,7 +46,7 @@ export async function userRoutes(app: FastifyTypedInstance) {
                 security: [{ BearerAuth: [] }],
                 params: UserIdParam,
                 response: {
-                    200: GetUserByIdResponseZod.describe('User Founded'),
+                    200: GetUserByIdResponse.describe('User Founded'),
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
                     403: ForbiddenSchema,

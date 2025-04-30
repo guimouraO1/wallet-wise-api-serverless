@@ -31,7 +31,7 @@ export class InMemoryBillRepository implements BillRepository {
         return bill;
     }
 
-    async findManyByAccountId(data: FindManyBillsInput) {
+    async getByAccountId(data: FindManyBillsInput) {
         const bills = this.items.filter((item) => item.accountId === data.accountId).slice((data.page - 1) * data.offset, data.page * data.offset);
         const response = {
             billsCount: this.items.length,
@@ -57,7 +57,7 @@ export class InMemoryBillRepository implements BillRepository {
         return this.items[index];
     }
 
-    async findUnique(billId: string) {
+    async getById(billId: string) {
         const bill = this.items.find((item) => item.id === billId);
         return bill ?? null;
     }
