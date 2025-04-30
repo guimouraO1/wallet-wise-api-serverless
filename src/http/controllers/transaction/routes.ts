@@ -1,22 +1,25 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
-import { BadRequestSchema } from '../../../utils/schemas/errors/bad-request-schema';
-import { InternalServerErrorSchema } from '../../../utils/schemas/errors/internal-server-error-schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/errors/unauthorized-schema';
-import { CreatedSchema } from '../../../utils/schemas/default-responses/created-schema';
-import { ForbiddenSchema } from '../../../utils/schemas/errors/forbidden-schema';
+import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
+import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
+import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
+import { CreatedSchema } from '../../../utils/schemas/responses/default-responses/created.schema';
+import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
 import { createTransaction } from './create-transaction.controller';
 import { verifyJwt } from '../../../http/middlewares/verify-jwt';
-import { TransactionCreateSchema } from '../../../utils/schemas/transactions/create-transaction-schema';
-import { FindManyTransactionsRequestSchema, FindManyTransactionsResponseSchema } from '../../../utils/schemas/transactions/find-many-transactions-schema';
-import { findManyPaginatedTransactions } from './find-many-paginated-transactions.controller';
+import { CreateTransactionBody } from '../../../utils/schemas/request/transactions/create-transaction.schema';
+import { GetPaginatedTransactionsQuery }
+    from '../../../utils/schemas/request/transactions/get-paginated-transactions.schema';
+import { getPaginatedTransactions } from './get-paginated-transactions.controller';
 import { authorizeOwnerOrAdminByAccountIdParam } from '../../../http/middlewares/authorize-by-account-id-param';
-import { NotFoundSchema } from '../../../utils/schemas/errors/not-found-schema';
+import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
 import { authorizeOwnerOrAdminByAccountIdBody } from '../../../http/middlewares/authorize-by-account-id-body';
 import { deleteTransaction } from './delete-transaction.controller';
-import { DeleteTransactionResponseZod, DeleteTransactionZod } from '../../../utils/schemas/transactions/delete-transaction';
-import { AccountIdParamZod } from '../../../utils/schemas/account-id-param';
-import { FindManyInPeriodTransactionsZod } from '../../../utils/schemas/transactions/find-many-in-period-transactions-schema';
-import { findManyTransactionsInPeriod } from './find-many-transactions-in-period.controller';
+import { DeleteTransactionParams } from '../../../utils/schemas/request/transactions/delete-transaction.schema';
+import { AccountIdParam } from '../../../utils/schemas/request/account/account-id-param.schema';
+import { GetTransactionsInPeriodQuery } from '../../../utils/schemas/request/transactions/get-transactions-in-period.schema';
+import { getTransactionsInPeriod } from './get-transactions-in-period.controller';
+import { GetPaginatedTransactionsResponse } from 'src/utils/schemas/responses/transactions/get-paginated-transactions.schema';
+import { DeleteTransactionResponse } from 'src/utils/schemas/responses/transactions/delete-transaction.schema';
 
 export async function transactionRoutes(app: FastifyTypedInstance) {
     app.post('/transaction',
@@ -27,7 +30,7 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Create Transaction',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                body: TransactionCreateSchema,
+                body: CreateTransactionBody,
                 response: {
                     201: CreatedSchema.describe('Transaction Created'),
                     400: BadRequestSchema,
@@ -47,10 +50,10 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Find many transactions',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParamZod,
-                querystring: FindManyTransactionsRequestSchema,
+                params: AccountIdParam,
+                querystring: GetPaginatedTransactionsQuery,
                 response: {
-                    200: FindManyTransactionsResponseSchema.describe('Finded many transactions'),
+                    200: GetPaginatedTransactionsResponse.describe('Finded many transactions'),
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
                     403: ForbiddenSchema,
@@ -59,7 +62,7 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 }
             }
         },
-        findManyPaginatedTransactions
+        getPaginatedTransactions
     );
 
     app.get('/transaction/period/:accountId',
@@ -69,10 +72,10 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Find many transactions',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParamZod,
-                querystring: FindManyInPeriodTransactionsZod,
+                params: AccountIdParam,
+                querystring: GetTransactionsInPeriodQuery,
                 response: {
-                    200: FindManyTransactionsResponseSchema.describe('Finded many transactions in period'),
+                    200: GetPaginatedTransactionsResponse.describe('Finded many transactions in period'),
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
                     403: ForbiddenSchema,
@@ -81,7 +84,7 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 }
             }
         },
-        findManyTransactionsInPeriod
+        getTransactionsInPeriod
     );
 
     app.delete('/transaction/:accountId/:transactionId',
@@ -91,9 +94,9 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Delete transaction',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                params: DeleteTransactionZod,
+                params: DeleteTransactionParams,
                 response: {
-                    200: DeleteTransactionResponseZod,
+                    200: DeleteTransactionResponse,
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
                     403: ForbiddenSchema,

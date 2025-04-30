@@ -1,7 +1,7 @@
 import { beforeEach, expect, it, describe, afterEach } from 'vitest';
 import { hash } from 'bcryptjs';
 import { InMemoryUsersRepository } from '../../repositories/in-memory/in-memory-users-repository';
-import { PASSWORD_HASH_ROUNDS } from '../../utils/constants/password-hash-rounds.constant';
+import { PASSWORD_HASH_ROUNDS } from '../../utils/constants/password-hash-rounds';
 import { UserService } from '../user.service';
 import { UserAlreadyExistsError } from '../../utils/errors/user-already-exists-error';
 import { InMemoryAccountsRepository } from '../../repositories/in-memory/in-memory-account-repository';

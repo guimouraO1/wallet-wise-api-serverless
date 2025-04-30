@@ -5,13 +5,13 @@ import { BillFactory } from '../../../services/factories/bill.factory';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { NotFoundError } from '../../../utils/errors/not-found-error';
 import { BillAlreadyPaid } from '../../../utils/errors/bill-already-paid-error';
-import { PayInvoiceParams } from '../../../utils/schemas/bills/pay-invoice';
+import { PayInvoiceBodyType } from '../../../utils/schemas/request/bills/pay-invoice.schema';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function payInvoice(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Initiating pay invoice - User ${request.user.sub}`);
-    const { accountId, billId } = request.body as PayInvoiceParams;
+    const { accountId, billId } = request.body as PayInvoiceBodyType;
 
     try {
         const billService = BillFactory();

@@ -2,13 +2,13 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import logger from '../../../utils/lib/logger';
 import { StatusCodes } from 'http-status-codes';
 import { BillFactory } from '../../../services/factories/bill.factory';
-import { DeleteBillParams } from '../../../utils/schemas/bills/delete-bill';
+import { DeleteBillParamType } from '../../../utils/schemas/request/bills/delete-bill.schema';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function deleteBill(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Initiating delete bill - User ${request.user.sub}`);
-    const { id } = request.params as DeleteBillParams;
+    const { id } = request.params as DeleteBillParamType;
 
     try {
         const billService = BillFactory();

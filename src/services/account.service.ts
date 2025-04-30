@@ -8,12 +8,12 @@ export class AccountService {
     constructor(private accountRepository: AccountRepository, private usersRepository: UsersRepository) {}
 
     async create(userId: string): Promise<Account> {
-        const userExists = await this.usersRepository.findById(userId);
+        const userExists = await this.usersRepository.getById(userId);
         if (!userExists) {
             throw new UserNotFoundError();
         }
 
-        const accountAlreadyExists = await this.accountRepository.findByUserId(userId);
+        const accountAlreadyExists = await this.accountRepository.getByUserId(userId);
         if (accountAlreadyExists) {
             throw new AccountAlreadyExistsError();
         }
@@ -23,13 +23,13 @@ export class AccountService {
         return account;
     }
 
-    async findAccountByUserId(userId: string): Promise<Account>  {
-        const userExists = await this.usersRepository.findById(userId);
+    async getAccountByUserId(userId: string): Promise<Account>  {
+        const userExists = await this.usersRepository.getById(userId);
         if (!userExists) {
             throw new UserNotFoundError();
         }
 
-        const account = await this.accountRepository.findByUserId(userId);
+        const account = await this.accountRepository.getByUserId(userId);
         if (!account) {
             throw new AccountNotFoundError();
         }
@@ -37,13 +37,13 @@ export class AccountService {
         return account;
     }
 
-    async updateAccount(data: UpdateAccountInput): Promise<Account>  {
-        const accountExists = await this.accountRepository.findByAccountId(data.accountId);
+    async update(data: UpdateAccountInput): Promise<Account>  {
+        const accountExists = await this.accountRepository.getByAccountId(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
 
-        const account = await this.accountRepository.updateAccount(data);
+        const account = await this.accountRepository.update(data);
 
         return account;
     }

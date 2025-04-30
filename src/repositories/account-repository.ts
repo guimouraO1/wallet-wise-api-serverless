@@ -20,7 +20,7 @@ export type UpdateAccountInput = {
 
 export interface AccountRepository {
     create(data: CreateAccount): Promise<Account>;
-    findByUserId(userId: string): Promise<Account | null>;
-    findByAccountId(accountId: string): Promise<Account | null>;
-    updateAccount(data: UpdateAccountInput): Promise<Account>;
+    getByUserId(userId: string): Promise<Account | null>;
+    getByAccountId(accountId: string): Promise<Account | null>;
+    update(data: UpdateAccountInput): Promise<Account>;
 }

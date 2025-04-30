@@ -10,7 +10,7 @@ export class PrismaAccountRepository implements AccountRepository {
         return account;
     }
 
-    async findByUserId(userId: string) {
+    async getByUserId(userId: string) {
         const account = await prisma.account.findUnique({
             where: { userId }
         });
@@ -18,7 +18,7 @@ export class PrismaAccountRepository implements AccountRepository {
         return account;
     }
 
-    async findByAccountId(accountId: string) {
+    async getByAccountId(accountId: string) {
         const account = await prisma.account.findUnique({
             where: { id: accountId }
         });
@@ -26,7 +26,7 @@ export class PrismaAccountRepository implements AccountRepository {
         return account;
     }
 
-    async updateAccount(data: UpdateAccountInput) {
+    async update(data: UpdateAccountInput) {
         const account = await prisma.account.update({
             data: {
                 balance: data.type === 'withdraw'

@@ -34,13 +34,13 @@ export class InMemoryUsersRepository implements UsersRepository {
         return user;
     }
 
-    async findByEmail(email: string) {
+    async getByEmail(email: string) {
         const user = this.items.find((item) => item.email === email);
 
         return user ?? null;
     }
 
-    async findById(id: string) {
+    async getById(id: string) {
         const user = this.items.find((item) => item.id === id);
         return user ?? null;
     }

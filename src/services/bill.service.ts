@@ -9,7 +9,7 @@ export class BillService {
     constructor(private billRepository: BillRepository, private accountRepository: AccountRepository, private transactionRepository: TransactionRepository)  {}
 
     async create(data: BillCreateInput): Promise<Bill> {
-        const accountExists = await this.accountRepository.findByAccountId(data.accountId);
+        const accountExists = await this.accountRepository.getByAccountId(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
@@ -18,13 +18,13 @@ export class BillService {
         return bill;
     }
 
-    async findManyByAccountId(data: FindManyBillsInput): Promise<FindManyBillsResponse> {
-        const accountExists = await this.accountRepository.findByAccountId(data.accountId);
+    async getByAccountId(data: FindManyBillsInput): Promise<FindManyBillsResponse> {
+        const accountExists = await this.accountRepository.getByAccountId(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
 
-        const bills = await this.billRepository.findManyByAccountId(data);
+        const bills = await this.billRepository.getByAccountId(data);
         return bills;
     }
 
@@ -34,12 +34,12 @@ export class BillService {
     }
 
     async payInvoice(accountId: string, billId: string) {
-        const accountExists = await this.accountRepository.findByAccountId(accountId);
+        const accountExists = await this.accountRepository.getByAccountId(accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
 
-        const bill = await this.billRepository.findUnique(billId);
+        const bill = await this.billRepository.getById(billId);
         if (!bill) {
             throw new NotFoundError();
         }
@@ -49,7 +49,7 @@ export class BillService {
         }
 
         if (bill.installments && bill.paidInstallments === (bill.installments - 1)) {
-            await this.accountRepository.updateAccount({ accountId, amount: bill.amount, type: 'withdraw' });
+            await this.accountRepository.update({ accountId, amount: bill.amount, type: 'withdraw' });
             await this.transactionRepository.create({
                 accountId,
                 name: bill.name,
@@ -62,7 +62,7 @@ export class BillService {
             return billUpdated;
         }
 
-        await this.accountRepository.updateAccount({ accountId, amount: bill.amount, type: 'withdraw' });
+        await this.accountRepository.update({ accountId, amount: bill.amount, type: 'withdraw' });
         await this.transactionRepository.create({
             accountId,
             name: bill.name ?? '',

@@ -20,7 +20,8 @@ export default [
             'no-multiple-empty-lines': ['error', { max: 1 }],
             'no-trailing-spaces': 'error',
             '@typescript-eslint/no-explicit-any': 'off',
-            'no-unused-vars': 'off'
+            'no-unused-vars': 'off',
+            'no-prototype-builtins': 'off'
         }
     }
 ];

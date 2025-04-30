@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../utils/lib/logger';
-import { UserIdParamZod } from '../../utils/schemas/user-id-param';
+import { UserIdParamZod } from '../../utils/schemas/request/user/user-id-param.schema';
 
 const filename = __filename.split(/[/\\]/).pop();
 

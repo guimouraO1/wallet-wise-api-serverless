@@ -2,12 +2,12 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../../utils/lib/logger';
 import { transactionFactory } from '../../../services/factories/transaction.factory';
-import { DeleteTransactionParams } from '../../../utils/schemas/transactions/delete-transaction';
+import { DeleteTransactionParamsType } from '../../../utils/schemas/request/transactions/delete-transaction.schema';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function deleteTransaction(request: FastifyRequest, reply: FastifyReply) {
-    const { transactionId } = request.params as DeleteTransactionParams;
+    const { transactionId } = request.params as DeleteTransactionParamsType;
 
     logger.info(`${filename} -> Initiating delete transaction - User ${request.user.sub}`);
 
