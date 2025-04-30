@@ -3,7 +3,7 @@ import { env } from './utils/lib/env';
 import { fastifyJwt } from '@fastify/jwt';
 import { fastifyCookie } from '@fastify/cookie';
 import { fastifyCors } from '@fastify/cors';
-import { jsonSchemaTransform, serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod';
+import { serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod';
 import { fastifySwagger } from '@fastify/swagger';
 import { fastifySwaggerUi } from '@fastify/swagger-ui';
 import { authRoutes } from './http/controllers/auth/routes';
@@ -13,6 +13,7 @@ import { errorHandler } from './utils/error-handler';
 import { accountRoutes } from './http/controllers/account/routes';
 import { transactionRoutes } from './http/controllers/transaction/routes';
 import { billRoutes } from './http/controllers/bill/routes';
+import { fastifySwaggerConfig } from './utils/constants/fastify-swagger-config';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
@@ -22,31 +23,7 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(fastifyJwt, jwtConfig);
 app.register(fastifyCookie, { secret: env.COOKIE_SECRET });
 app.register(fastifyCors, { origin: true, credentials: true });
-app.register(fastifySwagger, {
-    openapi: {
-        info: {
-            title: 'Wallet',
-            description: 'Documentation',
-            version: '1.1.0'
-        },
-        servers: [
-            {
-                url: `http://localhost:${env.PORT}`,
-                description: 'Development server'
-            }
-        ],
-        components: {
-            securitySchemes: {
-                BearerAuth: {
-                    type: 'http' as const,
-                    scheme: 'bearer',
-                    bearerFormat: 'JWT'
-                }
-            }
-        }
-    },
-    transform: jsonSchemaTransform
-});
+app.register(fastifySwagger, fastifySwaggerConfig);
 
 app.register(fastifySwaggerUi, { routePrefix: '/docs' });
 app.register(authRoutes);
