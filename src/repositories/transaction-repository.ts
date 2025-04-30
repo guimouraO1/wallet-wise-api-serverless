@@ -1,4 +1,4 @@
-import { GetPaginatedTransactionsInternalType } from 'src/utils/schemas/internal/transactions/get-paginated-transactions.schema';
+import { GetPaginatedTransactionsInternalType } from '../utils/schemas/internal/transactions/get-paginated-transactions.schema';
 
 export type TransactionType = 'withdraw' | 'deposit';
 export type PaymentMethod = 'credit_card' | 'debit_card' | 'account_cash' | 'pix' | 'other';

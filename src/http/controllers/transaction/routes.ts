@@ -18,8 +18,8 @@ import { DeleteTransactionParams } from '../../../utils/schemas/request/transact
 import { AccountIdParam } from '../../../utils/schemas/request/account/account-id-param.schema';
 import { GetTransactionsInPeriodQuery } from '../../../utils/schemas/request/transactions/get-transactions-in-period.schema';
 import { getTransactionsInPeriod } from './get-transactions-in-period.controller';
-import { GetPaginatedTransactionsResponse } from 'src/utils/schemas/responses/transactions/get-paginated-transactions.schema';
-import { DeleteTransactionResponse } from 'src/utils/schemas/responses/transactions/delete-transaction.schema';
+import { GetPaginatedTransactionsResponse } from '../../../utils/schemas/responses/transactions/get-paginated-transactions.schema';
+import { DeleteTransactionResponse } from '../../../utils/schemas/responses/transactions/delete-transaction.schema';
 
 export async function transactionRoutes(app: FastifyTypedInstance) {
     app.post('/transaction',

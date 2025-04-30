@@ -18,8 +18,8 @@ import { DeletedSchemaZod } from '../../../utils/schemas/responses/default-respo
 import { ConflictSchema } from '../../../utils/schemas/responses/errors/conflict.schema';
 import { PayInvoiceBody } from '../../../utils/schemas/request/bills/pay-invoice.schema';
 import { payInvoice } from './pay-invoice.controller';
-import { GetPaginatedBillsQuery } from 'src/utils/schemas/request/bills/get-paginated-bills.schema';
-import { GetPaginatedBillsResponse } from 'src/utils/schemas/responses/bills/get-paginated-bills.schema';
+import { GetPaginatedBillsQuery } from '../../../utils/schemas/request/bills/get-paginated-bills.schema';
+import { GetPaginatedBillsResponse } from '../../../utils/schemas/responses/bills/get-paginated-bills.schema';
 
 export async function billRoutes(app: FastifyTypedInstance) {
     app.post('/bill',

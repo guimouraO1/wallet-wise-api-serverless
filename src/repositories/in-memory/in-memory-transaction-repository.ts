@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { Transaction, TransactionCreateInput, TransactionRepository } from '../transaction-repository';
-import { GetPaginatedTransactionsInternalType } from 'src/utils/schemas/internal/transactions/get-paginated-transactions.schema';
+import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/internal/transactions/get-paginated-transactions.schema';
 
 export class InMemoryTransactionRepository implements TransactionRepository {
     public items: Transaction[] = [];

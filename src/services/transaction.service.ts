@@ -5,8 +5,8 @@ import { Transaction, TransactionCreateInput, TransactionRepository, Transaction
 import { AccountNotFoundError } from '../utils/errors/account-not-found-error';
 import { UpdateAccountError } from '../utils/errors/update-account-error';
 import { DateTime } from 'luxon';
-import { GetPaginatedTransactionsInternalType } from 'src/utils/schemas/internal/transactions/get-paginated-transactions.schema';
-import { TIMEZONE } from 'src/utils/constants/timezone';
+import { GetPaginatedTransactionsInternalType } from '../utils/schemas/internal/transactions/get-paginated-transactions.schema';
+import { TIMEZONE } from '../utils/constants/timezone';
 
 export class TransactionService {
     constructor(private transactionRepository: TransactionRepository, private accountRepository: AccountRepository)  {}
