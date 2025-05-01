@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const CreateBillBody = z.object({
     accountId:        z.string().min(3).max(200),
-    description:      z.string().min(1).max(500).nullable().optional(),
+    description:      z.string().max(500).nullable().optional(),
     name:             z.string().min(3).max(100),
     amount:           z.number().min(0.01).max(10_000),
     dueDay:           z.number().min(1).max(31).nullable(),
