@@ -5,7 +5,7 @@ import { PASSWORD_HASH_ROUNDS } from '../../utils/constants/password-hash-rounds
 import { UserService } from '../user.service';
 import { UserAlreadyExistsError } from '../../utils/errors/user-already-exists-error';
 import { InMemoryAccountsRepository } from '../../repositories/in-memory/in-memory-account-repository';
-import { fakeUser } from '../../utils/constants/fake-user';
+import { FAKE_USER } from '../../utils/constants/fake-user';
 
 let usersRepository: InMemoryUsersRepository;
 let accountRepository: InMemoryAccountsRepository;
@@ -24,29 +24,29 @@ describe('User Service', () => {
     });
 
     it('should be able to create new user', async () => {
-        const user = await sut.create({ email: fakeUser.email, name: fakeUser.name, password: fakeUser.password });
+        const user = await sut.create({ email: FAKE_USER.email, name: FAKE_USER.name, password: FAKE_USER.password });
 
         expect(user.id).toEqual(expect.any(String));
-        expect(user.name).toEqual(fakeUser.name);
-        expect(user.email).toEqual(fakeUser.email);
+        expect(user.name).toEqual(FAKE_USER.name);
+        expect(user.email).toEqual(FAKE_USER.email);
     });
 
     it('should not be able to create a user if email already registered', async () => {
         await usersRepository.create({
-            name: fakeUser.name,
-            email: fakeUser.email,
-            password: await hash(fakeUser.password, PASSWORD_HASH_ROUNDS)
+            name: FAKE_USER.name,
+            email: FAKE_USER.email,
+            password: await hash(FAKE_USER.password, PASSWORD_HASH_ROUNDS)
         });
 
-        await expect(() => sut.create(fakeUser)).rejects.toBeInstanceOf(UserAlreadyExistsError);
+        await expect(() => sut.create(FAKE_USER)).rejects.toBeInstanceOf(UserAlreadyExistsError);
     });
 
     it('should be able to get user by id', async () => {
-        const createdUser = await sut.create(fakeUser);
+        const createdUser = await sut.create(FAKE_USER);
         const user = await sut.getUserById(createdUser.id);
 
         expect(user?.id).toEqual(createdUser.id);
-        expect(user?.email).toEqual(fakeUser.email);
-        expect(user?.name).toEqual(fakeUser.name);
+        expect(user?.email).toEqual(FAKE_USER.email);
+        expect(user?.name).toEqual(FAKE_USER.name);
     });
 });

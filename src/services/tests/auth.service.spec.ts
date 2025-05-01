@@ -4,7 +4,7 @@ import { InMemoryUsersRepository } from '../../repositories/in-memory/in-memory-
 import { PASSWORD_HASH_ROUNDS } from '../../utils/constants/password-hash-rounds';
 import { InvalidCredentialsError } from '../../utils/errors/invalid-credentials-error';
 import { AuthService } from '../auth.service';
-import { fakeUser } from '../../utils/constants/fake-user';
+import { FAKE_USER } from '../../utils/constants/fake-user';
 
 let usersRepository: InMemoryUsersRepository;
 let sut: AuthService;
@@ -20,8 +20,8 @@ describe('Authenticate Service', () => {
     });
 
     it('should be able to authenticate', async () => {
-        await usersRepository.create({ name: fakeUser.name, email: fakeUser.email, password: await hash(fakeUser.password, PASSWORD_HASH_ROUNDS) });
-        const user = await sut.signIn({ email: fakeUser.email, password: fakeUser.password });
+        await usersRepository.create({ name: FAKE_USER.name, email: FAKE_USER.email, password: await hash(FAKE_USER.password, PASSWORD_HASH_ROUNDS) });
+        const user = await sut.signIn({ email: FAKE_USER.email, password: FAKE_USER.password });
 
         expect(user.id).toEqual(expect.any(String));
     });
@@ -31,12 +31,12 @@ describe('Authenticate Service', () => {
     });
 
     it('should not be able to authenticate with wrong email', async () => {
-        await usersRepository.create({ name: fakeUser.name, email: fakeUser.email, password: await hash(fakeUser.password, PASSWORD_HASH_ROUNDS) });
-        await expect(() => sut.signIn({ email: 'wrong_email', password: fakeUser.password })).rejects.toBeInstanceOf(InvalidCredentialsError);
+        await usersRepository.create({ name: FAKE_USER.name, email: FAKE_USER.email, password: await hash(FAKE_USER.password, PASSWORD_HASH_ROUNDS) });
+        await expect(() => sut.signIn({ email: 'wrong_email', password: FAKE_USER.password })).rejects.toBeInstanceOf(InvalidCredentialsError);
     });
 
     it('should not be able to authenticate with wrong password', async () => {
-        await usersRepository.create({ name: fakeUser.name, email: fakeUser.email, password: await hash(fakeUser.password, PASSWORD_HASH_ROUNDS) });
-        await expect(() => sut.signIn({ email: fakeUser.email, password: 'wrong_password' })).rejects.toBeInstanceOf(InvalidCredentialsError);
+        await usersRepository.create({ name: FAKE_USER.name, email: FAKE_USER.email, password: await hash(FAKE_USER.password, PASSWORD_HASH_ROUNDS) });
+        await expect(() => sut.signIn({ email: FAKE_USER.email, password: 'wrong_password' })).rejects.toBeInstanceOf(InvalidCredentialsError);
     });
 });

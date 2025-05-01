@@ -6,7 +6,7 @@ import { AccountNotFoundError } from '../../utils/errors/account-not-found-error
 import { TransactionService } from '../transaction.service';
 import { Account } from '../../repositories/account-repository';
 import { User } from '../../repositories/users-repository';
-import { fakeUser } from '../../utils/constants/fake-user';
+import { FAKE_USER } from '../../utils/constants/fake-user';
 import { YouAreNotElonError } from '../../utils/errors/elon-error';
 
 let usersRepository: InMemoryUsersRepository;
@@ -23,7 +23,7 @@ describe('Transaction Service', () => {
         transactionRepository = new InMemoryTransactionRepository();
         sut = new TransactionService(transactionRepository, accountRepository);
 
-        user = await usersRepository.create({ name: fakeUser.name, email: fakeUser.email, password: fakeUser.password });
+        user = await usersRepository.create({ name: FAKE_USER.name, email: FAKE_USER.email, password: FAKE_USER.password });
         account = await accountRepository.create({ userId: user.id });
     });
 
