@@ -17,7 +17,7 @@ export class TransactionService {
             throw new AccountNotFoundError();
         }
 
-        if(accountExists.balance >= 10_000_000_000) {
+        if(accountExists.balance >= 10_000_000_000 && data.type === 'deposit') {
             throw new YouAreNotElonError();
         }
 
