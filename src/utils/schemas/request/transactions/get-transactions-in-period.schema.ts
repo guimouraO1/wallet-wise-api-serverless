@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { DateTime } from 'luxon';
+import { DATE_FORMAT } from '../../../../utils/constants/date-format';
 
-const dateFormat = 'dd-MM-yyyy';
 const dateRegex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/;
 
 export const GetTransactionsInPeriodQuery = z
@@ -10,8 +10,8 @@ export const GetTransactionsInPeriodQuery = z
       endDate:   z.string().regex(dateRegex, 'A data deve estar no formato DD-MM-YYYY')
   })
   .refine((data) => {
-      const start = DateTime.fromFormat(data.startDate, dateFormat);
-      const end   = DateTime.fromFormat(data.endDate,   dateFormat);
+      const start = DateTime.fromFormat(data.startDate, DATE_FORMAT);
+      const end   = DateTime.fromFormat(data.endDate,   DATE_FORMAT);
 
       if (!start.isValid || !end.isValid) return false;
 

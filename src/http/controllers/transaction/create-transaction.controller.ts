@@ -5,6 +5,7 @@ import { CreateTransactionBodyType } from '../../../utils/schemas/request/transa
 import { transactionFactory } from '../../../services/factories/transaction.factory';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { UpdateAccountError } from '../../../utils/errors/update-account-error';
+import { YouAreNotElonError } from '../../../utils/errors/elon-error';
 
 const filename = __filename.split(/[/\\]/).pop();
 
@@ -28,6 +29,11 @@ export async function createTransaction(request: FastifyRequest, reply: FastifyR
         if (error instanceof UpdateAccountError) {
             logger.error(`${filename} -> Create Transaction Error - User ${request.user.sub}`);
             return reply.status(StatusCodes.NOT_FOUND).send({ message: error.message });
+        }
+
+        if (error instanceof YouAreNotElonError) {
+            logger.error(`${filename} -> Create Transaction Error (+10_000_000_000)) - User ${request.user.sub}`);
+            return reply.status(StatusCodes.UNPROCESSABLE_ENTITY).send({ message: error.message });
         }
 
         logger.error(`${filename} -> Unexpected error during create transaction: ${error}`);

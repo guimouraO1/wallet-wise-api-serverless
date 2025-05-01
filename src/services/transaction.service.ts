@@ -1,5 +1,5 @@
 
-import { YouAreNotElonCap } from '../utils/errors/elon-error';
+import { YouAreNotElonError } from '../utils/errors/elon-error';
 import { AccountRepository } from '../repositories/account-repository';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../repositories/transaction-repository';
 import { AccountNotFoundError } from '../utils/errors/account-not-found-error';
@@ -18,7 +18,7 @@ export class TransactionService {
         }
 
         if(accountExists.balance >= 10_000_000_000) {
-            throw new YouAreNotElonCap();
+            throw new YouAreNotElonError();
         }
 
         await this.accountRepository.update({ accountId: data.accountId, amount: data.amount, type: data.type }).catch(() => {

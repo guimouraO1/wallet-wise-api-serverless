@@ -7,6 +7,7 @@ import { TransactionService } from '../transaction.service';
 import { Account } from '../../repositories/account-repository';
 import { User } from '../../repositories/users-repository';
 import { fakeUser } from '../../utils/constants/fake-user';
+import { YouAreNotElonError } from '../../utils/errors/elon-error';
 
 let usersRepository: InMemoryUsersRepository;
 let accountRepository: InMemoryAccountsRepository;
@@ -59,6 +60,17 @@ describe('Transaction Service', () => {
 
         const accountAfterTransaction = await accountRepository.getByAccountId(transaction.accountId);
         expect(accountAfterTransaction?.balance).toEqual(oldBalanceValue - 200.23);
+    });
+
+    it('should not be able to make transaction if account money is more than 10_000_000_000', async () => {
+        accountRepository.items.push({
+            balance: 10000000000, id: '123', userId: 'user_id',
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+
+        await expect(() => sut.create({ accountId: '123', amount: 200,
+            name: 'Paying bill xxx', paymentMethod: 'credit_card', type: 'deposit' })).rejects.toBeInstanceOf(YouAreNotElonError);
     });
 
     it('should not be able to create an transaction if account do not exists', async () => {

@@ -1,17 +1,25 @@
 import { StatusCodes } from 'http-status-codes';
 import { env } from '../utils/lib/env';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { FastifyReply, FastifyRequest, FastifyError } from 'fastify';
 
-export function errorHandler(error: any, request: FastifyRequest, reply: FastifyReply) {
+interface ValidationErrorItem {
+  instancePath: string;
+  message: string;
+}
+
+type ZodFastifyError = FastifyError & {
+  validation?: ValidationErrorItem[];
+  validationContext?: string;
+};
+
+export function errorHandler(error: ZodFastifyError, request: FastifyRequest, reply: FastifyReply) {
     if (error.validation) {
-        return reply.status(StatusCodes.BAD_REQUEST).send({
-            message: 'Bad request',
-            status: StatusCodes.BAD_REQUEST,
-            errors: error.validation.map((err: any) => ({
-                key: err.params?.missingProperty,
-                value: err.message
-            }))
-        });
+        const errors = error.validation.map(err => ({
+            path: err.instancePath.replace(/^\//, ''),
+            message: err.message
+        }));
+
+        return reply.status(StatusCodes.BAD_REQUEST).send({ message: 'Bad Request', errors });
     }
 
     if (env.NODE_ENV !== 'production') {

@@ -20,6 +20,7 @@ import { GetTransactionsInPeriodQuery } from '../../../utils/schemas/request/tra
 import { getTransactionsInPeriod } from './get-transactions-in-period.controller';
 import { GetPaginatedTransactionsResponse } from '../../../utils/schemas/responses/transactions/get-paginated-transactions.schema';
 import { DeleteTransactionResponse } from '../../../utils/schemas/responses/transactions/delete-transaction.schema';
+import { UnprocessableEntity } from '../../../utils/schemas/responses/errors/unprocessable-entity.schema';
 
 export async function transactionRoutes(app: FastifyTypedInstance) {
     app.post('/transaction',
@@ -36,6 +37,7 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
                     403: ForbiddenSchema,
+                    422: UnprocessableEntity,
                     500: InternalServerErrorSchema
                 }
             }

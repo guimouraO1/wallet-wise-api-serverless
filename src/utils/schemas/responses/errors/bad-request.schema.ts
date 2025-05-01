@@ -1,13 +1,12 @@
 import { z } from 'zod';
 
 export const BadRequestSchema = z.object({
-    message: z.string(),
-    status: z.number(),
+    message: z.literal('Bad Request'),
     errors: z.array(
-    z.object({
-        key: z.string().optional(),
-        value: z.string()
-    })
+      z.object({
+          path: z.string(),
+          message: z.string()
+      })
   )
 }).describe('Bad Request');
 
