@@ -60,6 +60,7 @@ export type FindManyBillsResponse = {
 export interface BillRepository {
     create(data: BillCreateInput): Promise<Bill>;
     getByAccountId(data: FindManyBillsInput): Promise<FindManyBillsResponse>;
+    getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date): Promise<FindManyBillsResponse>;
     delete(billId: string): Promise<Bill>;
     payInvoice(paidInstallments: number, billId: string, active: boolean): Promise<Bill>;
     getById(billId: string): Promise<Bill | null>;

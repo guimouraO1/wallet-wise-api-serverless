@@ -4,6 +4,8 @@ import { AccountNotFoundError } from '../utils/errors/account-not-found-error';
 import { NotFoundError } from '../utils/errors/not-found-error';
 import { BillAlreadyPaid } from '../utils/errors/bill-already-paid-error';
 import { TransactionRepository } from '../repositories/transaction-repository';
+import { DateTime } from 'luxon';
+import { TIMEZONE } from '../utils/constants/timezone';
 
 export class BillService {
     constructor(private billRepository: BillRepository, private accountRepository: AccountRepository, private transactionRepository: TransactionRepository)  {}
@@ -25,6 +27,19 @@ export class BillService {
         }
 
         const bills = await this.billRepository.getByAccountId(data);
+        return bills;
+    }
+
+    async getByAccountIdInPeriod(accountId: string, startDate: string, endDate: string): Promise<FindManyBillsResponse> {
+        const accountExists = await this.accountRepository.getByAccountId(accountId);
+        if (!accountExists) {
+            throw new AccountNotFoundError();
+        }
+
+        const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
+        const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
+
+        const bills = await this.billRepository.getByAccountIdInPeriod(accountId, startDateFormated, endDateFormated);
         return bills;
     }
 

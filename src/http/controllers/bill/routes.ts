@@ -20,6 +20,8 @@ import { PayInvoiceBody } from '../../../utils/schemas/request/bills/pay-invoice
 import { payInvoice } from './pay-invoice.controller';
 import { GetPaginatedBillsQuery } from '../../../utils/schemas/request/bills/get-paginated-bills.schema';
 import { GetPaginatedBillsResponse } from '../../../utils/schemas/responses/bills/get-paginated-bills.schema';
+import { GetBillsInPeriodQuery } from '../../../utils/schemas/request/bills/get-bills-in-period.schema';
+import { getBillsInPeriod } from './get-bills-in-period.controller';
 
 export async function billRoutes(app: FastifyTypedInstance) {
     app.post('/bill',
@@ -62,6 +64,27 @@ export async function billRoutes(app: FastifyTypedInstance) {
             }
         },
         getPaginatedBills
+    );
+
+    app.get('/bill/period/:accountId',
+        {
+            onRequest: [verifyJwt, authorizeOwnerOrAdminByAccountIdParam],
+            schema: {
+                description: 'Get Bills in period',
+                tags: ['Bill'],
+                security: [{ BearerAuth: [] }],
+                params: AccountIdParam,
+                querystring: GetBillsInPeriodQuery.describe('Get bills in period'),
+                response: {
+                    200: GetPaginatedBillsResponse.describe('Finded Many Bills'),
+                    400: BadRequestSchema,
+                    401: UnauthorizedSchema,
+                    403: ForbiddenSchema,
+                    500: InternalServerErrorSchema
+                }
+            }
+        },
+        getBillsInPeriod
     );
 
     app.delete('/bill/:accountId/:id',

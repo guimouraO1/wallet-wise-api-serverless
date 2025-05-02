@@ -61,4 +61,13 @@ export class InMemoryBillRepository implements BillRepository {
         const bill = this.items.find((item) => item.id === billId);
         return bill ?? null;
     }
+
+    async getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date) {
+        const bills = this.items.filter((item) => item.accountId === accountId && item.createdAt >= startDate && item.createdAt <= endDate);
+        const response = {
+            billsCount: this.items.length,
+            bills
+        };
+        return response;
+    }
 }

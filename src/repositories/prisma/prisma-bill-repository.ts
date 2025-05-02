@@ -1,5 +1,5 @@
 import { prisma } from '../../utils/lib/prisma';
-import { BillCreateInput, BillRepository, FindManyBillsInput, FindManyBillsResponse } from '../bill-repository';
+import { Bill, BillCreateInput, BillRepository, FindManyBillsInput, FindManyBillsResponse } from '../bill-repository';
 
 export class PrismaBillRepository implements BillRepository {
     async delete(billId: string) {
@@ -76,4 +76,34 @@ export class PrismaBillRepository implements BillRepository {
 
         return bill;
     }
+
+    async getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date) {
+        const whereClause = {
+            accountId,
+            deleted: false,
+            createdAt: {
+                gte: startDate,
+                lte: endDate
+            }
+        };
+
+        const bills: Bill[] = await prisma.bill.findMany({
+            where: whereClause,
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        const count = await prisma.bill.count({
+            where: whereClause
+        });
+
+        const response: FindManyBillsResponse = {
+            billsCount: count,
+            bills
+        };
+
+        return response;
+    }
+
 }
