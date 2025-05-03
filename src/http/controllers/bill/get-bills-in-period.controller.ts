@@ -15,8 +15,8 @@ export async function getBillsInPeriod(request: FastifyRequest, reply: FastifyRe
     const { accountId } = request.params as AccountIdParamType;
 
     try {
-        const billservice = BillFactory();
-        const bills = await billservice.getByAccountIdInPeriod(accountId, startDate, endDate);
+        const billService = BillFactory();
+        const bills = await billService.getByAccountIdInPeriod(accountId, startDate, endDate);
         logger.info(`${filename} -> Get Bills in period successfully - User ${request.user.sub}`);
 
         reply.status(StatusCodes.OK).send(bills);

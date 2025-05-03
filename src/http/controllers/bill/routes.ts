@@ -1,5 +1,5 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
-import { verifyJwt } from '../../../http/middlewares/verify-jwt';
+import { verifyJwt } from '../../middlewares/verify-jwt';
 import { createBill } from './create-bill.controller';
 import { CreatedSchema } from '../../../utils/schemas/responses/default-responses/created.schema';
 import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
@@ -7,9 +7,9 @@ import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidd
 import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
 import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
 import { getPaginatedBills } from './get-paginated-bills.controller';
-import { authorizeOwnerOrAdminByAccountIdParam } from '../../../http/middlewares/authorize-by-account-id-param';
+import { authorizeOwnerOrAdminByAccountIdParam } from '../../middlewares/authorize-by-account-id-param';
 import { CreateBillBody } from '../../../utils/schemas/request/bills/create-bill.schema';
-import { authorizeOwnerOrAdminByAccountIdBody } from '../../../http/middlewares/authorize-by-account-id-body';
+import { authorizeOwnerOrAdminByAccountIdBody } from '../../middlewares/authorize-by-account-id-body';
 import { AccountIdParam } from '../../../utils/schemas/request/account/account-id-param.schema';
 import { deleteBill } from './delete-bill.controller';
 import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';

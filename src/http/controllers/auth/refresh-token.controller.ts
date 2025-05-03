@@ -20,7 +20,7 @@ export async function refreshToken(request: FastifyRequest, reply: FastifyReply)
         reply.setCookie(env.REFRESH_TOKEN_NAME, refreshToken, {
             path: '/',
             httpOnly: true,
-            secure: env.NODE_ENV === 'production' ? true : false,
+            secure: env.NODE_ENV === 'production',
             sameSite: 'none',
             signed: true
         }).status(StatusCodes.OK).send({ token });

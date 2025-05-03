@@ -46,7 +46,7 @@ export class TransactionService {
             throw new AccountNotFoundError();
         }
 
-        const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
+        const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
         const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
 
         const transactions = await this.transactionRepository.getByAccountIdInPeriod(accountId, startDateFormated, endDateFormated);

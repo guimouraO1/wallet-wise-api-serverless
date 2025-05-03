@@ -13,9 +13,9 @@ export async function getAccount(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Searching for account - User ${userId}`);
 
     try {
-        const accounteService = accountFactory();
-        const account = await accounteService.getAccountByUserId(userId);
-        logger.info(`${filename} -> Account finded successfully - User ${userId}`);
+        const accountService = accountFactory();
+        const account = await accountService.getAccountByUserId(userId);
+        logger.info(`${filename} -> Account found successfully - User ${userId}`);
 
         reply.status(StatusCodes.OK).send(account);
     } catch (error) {

@@ -25,7 +25,7 @@ export async function getPaginatedBills(request: FastifyRequest, reply: FastifyR
     try {
         const billService = BillFactory();
         const bills = await billService.getByAccountId(dataFormated as FindManyBillsInput);
-        logger.info(`${filename} -> Bills finded successfully - User ${request.user.sub}`);
+        logger.info(`${filename} -> Bills found successfully - User ${request.user.sub}`);
 
         return reply.status(StatusCodes.OK).send(bills);
     } catch (error) {

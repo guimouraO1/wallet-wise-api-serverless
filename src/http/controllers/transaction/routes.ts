@@ -5,14 +5,14 @@ import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unau
 import { CreatedSchema } from '../../../utils/schemas/responses/default-responses/created.schema';
 import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
 import { createTransaction } from './create-transaction.controller';
-import { verifyJwt } from '../../../http/middlewares/verify-jwt';
+import { verifyJwt } from '../../middlewares/verify-jwt';
 import { CreateTransactionBody } from '../../../utils/schemas/request/transactions/create-transaction.schema';
 import { GetPaginatedTransactionsQuery }
     from '../../../utils/schemas/request/transactions/get-paginated-transactions.schema';
 import { getPaginatedTransactions } from './get-paginated-transactions.controller';
-import { authorizeOwnerOrAdminByAccountIdParam } from '../../../http/middlewares/authorize-by-account-id-param';
+import { authorizeOwnerOrAdminByAccountIdParam } from '../../middlewares/authorize-by-account-id-param';
 import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
-import { authorizeOwnerOrAdminByAccountIdBody } from '../../../http/middlewares/authorize-by-account-id-body';
+import { authorizeOwnerOrAdminByAccountIdBody } from '../../middlewares/authorize-by-account-id-body';
 import { deleteTransaction } from './delete-transaction.controller';
 import { DeleteTransactionParams } from '../../../utils/schemas/request/transactions/delete-transaction.schema';
 import { AccountIdParam } from '../../../utils/schemas/request/account/account-id-param.schema';

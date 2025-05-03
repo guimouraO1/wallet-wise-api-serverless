@@ -6,3 +6,4 @@ log
 dist
 .vercel
 # package-lock.json
+.idea

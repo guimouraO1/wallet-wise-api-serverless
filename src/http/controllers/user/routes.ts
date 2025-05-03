@@ -7,12 +7,12 @@ import { CreatedSchema } from '../../../utils/schemas/responses/default-response
 import { ConflictSchema } from '../../../utils/schemas/responses/errors/conflict.schema';
 import { CreateUserBody } from '../../../utils/schemas/request/user/create-user.schema';
 import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
-import { verifyJwt } from '../../../http/middlewares/verify-jwt';
+import { verifyJwt } from '../../middlewares/verify-jwt';
 import { UserIdParam } from '../../../utils/schemas/request/user/user-id-param.schema';
 import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
 import { getUserById } from './get-user-by-id.controller';
-import { authorizeAdminOnly } from '../../../http/middlewares/authorize-admin-only';
-import { authorizeOwnerOrAdminByUserIdParam } from '../../../http/middlewares/authorize-by-user-id-param';
+import { authorizeAdminOnly } from '../../middlewares/authorize-admin-only';
+import { authorizeOwnerOrAdminByUserIdParam } from '../../middlewares/authorize-by-user-id-param';
 import { GetUserByIdResponse } from '../../../utils/schemas/responses/user/find-user.schema';
 
 export async function userRoutes(app: FastifyTypedInstance) {

@@ -24,3 +24,5 @@ export const CreateBillBody = z.object({
         path: ['installments']
     }
 );
+
+export type CreateBillBodyType = z.infer<typeof CreateBillBody>;

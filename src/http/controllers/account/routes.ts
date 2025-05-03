@@ -3,9 +3,9 @@ import { InternalServerErrorSchema } from '../../../utils/schemas/responses/erro
 import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
 import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
 import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
-import { verifyJwt } from '../../../http/middlewares/verify-jwt';
+import { verifyJwt } from '../../middlewares/verify-jwt';
 import { getAccount } from './get-account-by-user-id.controller';
-import { authorizeOwnerOrAdminByUserIdParam } from '../../../http/middlewares/authorize-by-user-id-param';
+import { authorizeOwnerOrAdminByUserIdParam } from '../../middlewares/authorize-by-user-id-param';
 import { UserIdParam } from '../../../utils/schemas/request/user/user-id-param.schema';
 import { GetAccountResponse } from '../../../utils/schemas/responses/account/get-account.schema';
 

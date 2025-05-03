@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import logger from '../../../utils/lib/logger';
-import { BillCreateInput } from '../../../utils/schemas/request/bills/create-bill.schema';
+import { CreateBillBodyType } from '../../../utils/schemas/request/bills/create-bill.schema';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { StatusCodes } from 'http-status-codes';
 import { BillFactory } from '../../../services/factories/bill.factory';
@@ -8,7 +8,7 @@ const filename = __filename.split(/[/\\]/).pop();
 
 export async function createBill(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Initiating create bill - User ${request.user.sub}`);
-    const data = request.body as BillCreateInput;
+    const data = request.body as CreateBillBodyType;
 
     try {
         const billService = BillFactory();
