@@ -11,12 +11,12 @@ const filename = __filename.split(/[/\\]/).pop();
 export async function getTransactionsInPeriod(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Get transactions in period - User ${request.user.sub}`);
 
-    const { startDate, endDate } = request.query as GetTransactionsInPeriodQueryType;
+    const { startDate, endDate, type } = request.query as GetTransactionsInPeriodQueryType;
     const { accountId } = request.params as AccountIdParamType;
 
     try {
         const transactionService = transactionFactory();
-        const transactions = await transactionService.getByAccountIdInPeriod(accountId, startDate, endDate);
+        const transactions = await transactionService.getByAccountIdInPeriod({ accountId, startDate, endDate, type });
         logger.info(`${filename} -> Get transactions in period successfully - User ${request.user.sub}`);
 
         reply.status(StatusCodes.OK).send(transactions);

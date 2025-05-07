@@ -1,6 +1,9 @@
 import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/internal/transactions/get-paginated-transactions.schema';
 import { prisma } from '../../utils/lib/prisma';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../transaction-repository';
+import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
+import { DateTime } from 'luxon';
+import { TIMEZONE } from '../../utils/constants/timezone';
 
 export class PrismaTransactionRepository implements TransactionRepository {
     async getByAccountId(data: GetPaginatedTransactionsInternalType) {
@@ -33,13 +36,17 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date) {
+    async getByAccountIdInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
+        const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
+        const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
+
         const whereClause = {
             accountId,
             deleted: false,
+            ...(type ? { type } : {}),
             createdAt: {
-                gte: startDate,
-                lte: endDate
+                gte: startDateFormated,
+                lte: endDateFormated
             }
         };
 

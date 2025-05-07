@@ -4,9 +4,8 @@ import { AccountRepository } from '../repositories/account-repository';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../repositories/transaction-repository';
 import { AccountNotFoundError } from '../utils/errors/account-not-found-error';
 import { UpdateAccountError } from '../utils/errors/update-account-error';
-import { DateTime } from 'luxon';
 import { GetPaginatedTransactionsInternalType } from '../utils/schemas/internal/transactions/get-paginated-transactions.schema';
-import { TIMEZONE } from '../utils/constants/timezone';
+import { GetTransactionsInPeriodInternalType } from '../utils/schemas/internal/transactions/get-transactions-in-period.schema';
 
 export class TransactionService {
     constructor(private transactionRepository: TransactionRepository, private accountRepository: AccountRepository)  {}
@@ -40,16 +39,13 @@ export class TransactionService {
         return transactions;
     }
 
-    async getByAccountIdInPeriod(accountId: string, startDate: string, endDate: string): Promise<TransactionsAndCount> {
+    async getByAccountIdInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType): Promise<TransactionsAndCount> {
         const accountExists = await this.accountRepository.getByAccountId(accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
 
-        const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
-        const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
-
-        const transactions = await this.transactionRepository.getByAccountIdInPeriod(accountId, startDateFormated, endDateFormated);
+        const transactions = await this.transactionRepository.getByAccountIdInPeriod({ accountId, startDate, endDate, type });
         return transactions;
     }
 

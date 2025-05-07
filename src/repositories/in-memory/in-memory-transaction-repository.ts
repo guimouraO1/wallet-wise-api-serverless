@@ -1,6 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import { Transaction, TransactionCreateInput, TransactionRepository } from '../transaction-repository';
 import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/internal/transactions/get-paginated-transactions.schema';
+import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
+import { DateTime } from 'luxon';
+import { TIMEZONE } from '../../utils/constants/timezone';
 
 export class InMemoryTransactionRepository implements TransactionRepository {
     public items: Transaction[] = [];
@@ -32,12 +35,23 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date) {
-        const transactions = this.items.filter((item) => item.accountId === accountId && item.createdAt >= startDate && item.createdAt <= endDate);
+    async getByAccountIdInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
+        const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
+        const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
+
+        const transactions = this.items.filter((item) => {
+            const matchesAccount = item.accountId === accountId;
+            const inPeriod = item.createdAt >= startDateFormated && item.createdAt <= endDateFormated;
+            const matchesType = type ? item.type === type : true;
+
+            return matchesAccount && inPeriod && matchesType;
+        });
+
         const response = {
-            transactionsCount: this.items.length,
+            transactionsCount: transactions.length,
             transactions
         };
+
         return response;
     }
 
