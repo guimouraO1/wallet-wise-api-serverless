@@ -4,6 +4,7 @@ import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/intern
 import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
 import { DateTime } from 'luxon';
 import { TIMEZONE } from '../../utils/constants/timezone';
+import { GetTransactionsSummaryByAccountIdAndYearType } from '../../utils/schemas/internal/transactions/get-transactions-summary-by-account-id-and-year.schema';
 
 export class InMemoryTransactionRepository implements TransactionRepository {
     public items: Transaction[] = [];
@@ -53,6 +54,31 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         };
 
         return response;
+    }
+
+    async getTransactionsSummaryByAccountIdAndYear({ accountId, year, type }: GetTransactionsSummaryByAccountIdAndYearType) {
+
+        const startOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).startOf('year').toJSDate();
+        const endOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).endOf('year').toJSDate();
+
+        const transactions = this.items.filter(item => {
+            const matchesAccount = item.accountId === accountId;
+            const inYear = item.createdAt >= startOfYear && item.createdAt <= endOfYear;
+            const matchesType = type ? item.type === type : true;
+            return matchesAccount && inYear && matchesType;
+        });
+
+        const monthlySummary = Array.from({ length: 12 }, (_, i) => {
+            const month = i + 1;
+            const monthName = DateTime.fromObject({ month }, { zone: TIMEZONE }).toFormat('LLLL');
+
+            const monthAmount = transactions.filter(t => DateTime.fromJSDate(t.createdAt).month === month)
+                .reduce((sum, t) => sum + Number(t.amount), 0);
+
+            return { name: monthName, value: monthAmount };
+        });
+
+        return monthlySummary;
     }
 
     async delete(transactionId: string) {

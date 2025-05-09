@@ -21,6 +21,11 @@ import { getTransactionsInPeriod } from './get-transactions-in-period.controller
 import { GetPaginatedTransactionsResponse } from '../../../utils/schemas/responses/transactions/get-paginated-transactions.schema';
 import { DeleteTransactionResponse } from '../../../utils/schemas/responses/transactions/delete-transaction.schema';
 import { UnprocessableEntity } from '../../../utils/schemas/responses/errors/unprocessable-entity.schema';
+import { getTransactionsSummaryByAccountIdAndYear } from './get-transactions-summary-by-account-id-and-year-.controller';
+import { GetTransactionsSummaryByAccountIdAndYearResponse } from
+    '../../../utils/schemas/responses/transactions/get-transactions-summary-by-account-id-and-year.schema';
+import { GetTransactionsSummaryByAccountIdAndYearRequest }
+    from '../../../utils/schemas/request/transactions/get-transactions-summary-by-account-id-and-year.schema';
 
 export async function transactionRoutes(app: FastifyTypedInstance) {
     app.post('/transaction',
@@ -87,6 +92,28 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
             }
         },
         getTransactionsInPeriod
+    );
+
+    app.get('/transaction/year/:accountId',
+        {
+            onRequest: [verifyJwt, authorizeOwnerOrAdminByAccountIdParam],
+            schema: {
+                description: 'Find transactions by year',
+                tags: ['Transaction'],
+                security: [{ BearerAuth: [] }],
+                params: AccountIdParam,
+                querystring: GetTransactionsSummaryByAccountIdAndYearRequest,
+                response: {
+                    200: GetTransactionsSummaryByAccountIdAndYearResponse.describe('Finded many transactions in YEAR'),
+                    400: BadRequestSchema,
+                    401: UnauthorizedSchema,
+                    403: ForbiddenSchema,
+                    404: NotFoundSchema.describe('Account Not Found'),
+                    500: InternalServerErrorSchema
+                }
+            }
+        },
+        getTransactionsSummaryByAccountIdAndYear
     );
 
     app.delete('/transaction/:accountId/:transactionId',

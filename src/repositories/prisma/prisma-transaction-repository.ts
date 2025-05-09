@@ -4,6 +4,7 @@ import { Transaction, TransactionCreateInput, TransactionRepository, Transaction
 import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
 import { DateTime } from 'luxon';
 import { TIMEZONE } from '../../utils/constants/timezone';
+import { GetTransactionsSummaryByAccountIdAndYearType } from '../../utils/schemas/internal/transactions/get-transactions-summary-by-account-id-and-year.schema';
 
 export class PrismaTransactionRepository implements TransactionRepository {
     async getByAccountId(data: GetPaginatedTransactionsInternalType) {
@@ -88,5 +89,38 @@ export class PrismaTransactionRepository implements TransactionRepository {
         });
 
         return transaction;
+    }
+
+    async getTransactionsSummaryByAccountIdAndYear({ accountId, year, type }: GetTransactionsSummaryByAccountIdAndYearType) {
+        const startOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).startOf('year').toJSDate();
+        const endOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).endOf('year').toJSDate();
+
+        const transactions = await prisma.transaction.findMany({
+            where: {
+                accountId,
+                deleted: false,
+                createdAt: {
+                    gte: startOfYear,
+                    lte: endOfYear
+                },
+                ...(type ? { type }: {})
+            },
+            select: {
+                amount: true,
+                createdAt: true
+            }
+        });
+
+        const monthlySummary = Array.from({ length: 12 }, (_, i) => {
+            const month = i + 1;
+            const monthName = DateTime.fromObject({ month }).toFormat('LLLL');
+
+            const monthAmount = transactions.filter((t) => DateTime.fromJSDate(t.createdAt).month === month)
+                .reduce((sum, t) => sum + Number(t.amount), 0);
+
+            return { name: monthName, value: monthAmount };
+        });
+
+        return monthlySummary;
     }
 }
