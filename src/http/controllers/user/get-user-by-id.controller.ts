@@ -24,6 +24,6 @@ export async function getUserById(request: FastifyRequest, reply: FastifyReply) 
         }
 
         logger.error(`${filename} -> Unexpected error during find user by id: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 }

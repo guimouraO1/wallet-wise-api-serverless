@@ -27,6 +27,6 @@ export async function getBillsInPeriod(request: FastifyRequest, reply: FastifyRe
         }
 
         logger.error(`${filename} -> Unexpected error during get Bills in period: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 }

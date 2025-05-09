@@ -27,6 +27,6 @@ export async function getTransactionsInPeriod(request: FastifyRequest, reply: Fa
         }
 
         logger.error(`${filename} -> Unexpected error during find many paginated transactions: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 }

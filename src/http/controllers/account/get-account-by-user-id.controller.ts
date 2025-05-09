@@ -30,6 +30,6 @@ export async function getAccount(request: FastifyRequest, reply: FastifyReply) {
         }
 
         logger.error(`${filename} -> Unexpected error during get account: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 }

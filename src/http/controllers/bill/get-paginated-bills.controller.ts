@@ -35,7 +35,7 @@ export async function getPaginatedBills(request: FastifyRequest, reply: FastifyR
         }
 
         logger.error(`${filename} -> Unexpected error during create transaction: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 
 }

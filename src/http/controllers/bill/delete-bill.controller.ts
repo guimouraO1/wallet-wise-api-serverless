@@ -18,7 +18,7 @@ export async function deleteBill(request: FastifyRequest, reply: FastifyReply) {
         reply.status(StatusCodes.CREATED).send({});
     } catch (error) {
         logger.error(`${filename} -> Unexpected error during create transaction: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 
 }

@@ -36,6 +36,6 @@ export async function signIn(request: FastifyRequest, reply: FastifyReply) {
         }
 
         logger.error(`${filename} -> Unexpected error during sign-in: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 }

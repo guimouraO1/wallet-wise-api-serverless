@@ -3,7 +3,7 @@ import { TransactionRepository } from '../../repositories/transaction-repository
 import { AccountNotFoundError } from '../../utils/errors/account-not-found-error';
 import { GetTransactionsSummaryByAccountIdAndYearType } from '../../utils/schemas/internal/transactions/get-transactions-summary-by-account-id-and-year.schema';
 
-export class GetTransactionsSummaryByAccountIdAndYear {
+export class GetTransactionsSummaryByAccountIdAndYearUseCase {
     constructor(private transactionsRepository: TransactionRepository, private accountRepository: AccountRepository) {}
 
     async execute({ accountId, year, type }: GetTransactionsSummaryByAccountIdAndYearType) {

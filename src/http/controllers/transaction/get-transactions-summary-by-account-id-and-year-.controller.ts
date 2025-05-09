@@ -28,6 +28,6 @@ export async function getTransactionsSummaryByAccountIdAndYear(request: FastifyR
         }
 
         logger.error(`${filename} -> Unexpected error during get transactions by year: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 }

@@ -19,6 +19,6 @@ export async function deleteTransaction(request: FastifyRequest, reply: FastifyR
         return reply.status(StatusCodes.OK).send({});
     } catch (error) {
         logger.error(`${filename} -> Unexpected error during create transaction: ${error}`);
-        throw error;
+        return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown error' });
     }
 }
