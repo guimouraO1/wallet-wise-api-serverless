@@ -10,7 +10,7 @@ export type User = {
     role: Role;
     created_at: Date;
     updated_at: Date;
-    avatarUrl?: string | null | undefined;
+    avatarUrl?: string;
     email_already_verifyed: boolean;
     password: string;
     Account: Account[]
