@@ -3,6 +3,7 @@ import { UsersRepository } from '../../repositories/users-repository';
 import { UserAlreadyExistsError } from '../../utils/errors/user-already-exists-error';
 import { CreateUserBodyType } from '../../utils/schemas/request/user/create-user.schema';
 import { CreateUserError } from '../../utils/errors/create-user-error';
+import { env } from '../../utils/libs/env';
 
 export class CreateUserUseCase {
     constructor(private usersRepository: UsersRepository) { }
@@ -13,8 +14,7 @@ export class CreateUserUseCase {
             throw new UserAlreadyExistsError();
         }
 
-        // env.PASSWORD_HASH_ROUNDS
-        const salt = await genSalt(10);
+        const salt = await genSalt(env.PASSWORD_HASH_ROUNDS);
         const password_hash = await hash(password, salt);
 
         const user = await this.usersRepository.create({ name, email, password: password_hash, ...(avatarUrl ? { avatarUrl } : {}) })

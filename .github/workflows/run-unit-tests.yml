@@ -6,6 +6,11 @@ jobs:
   run-unit-tests:
     name: Run Unit Tests
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      JWT_PUBLIC_KEY: "BEGIN RSA PRIVATE KEY"
+      JWT_PRIVATE_KEY: "BEGIN PUBLIC KEY"
+      DATABASE_URL: "DATABASE"
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3

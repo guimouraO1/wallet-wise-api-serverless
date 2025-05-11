@@ -2,12 +2,13 @@ import { genSalt, hash } from 'bcryptjs';
 import { User, UserCreateInput, UsersRepository } from '../users-repository';
 import { randomUUID } from 'node:crypto';
 import { Optional } from '../../utils/optional';
+import { env } from '../../utils/libs/env';
 
 export class InMemoryUsersRepository implements UsersRepository {
     public items: Optional<User, 'Account' | 'password' >[] = [];
 
     async create(data: UserCreateInput) {
-        const salt = await genSalt(10);
+        const salt = await genSalt(env.PASSWORD_HASH_ROUNDS);
         const password_hash = await hash(data.password, salt);
 
         const user: Optional<User, 'Account'> = {
