@@ -1,4 +1,4 @@
-import { prisma } from '../../utils/lib/prisma';
+import { prisma } from '../../utils/libs/prisma';
 import { Bill, BillCreateInput, BillRepository, FindManyBillsInput, FindManyBillsResponse } from '../bill-repository';
 
 export class PrismaBillRepository implements BillRepository {

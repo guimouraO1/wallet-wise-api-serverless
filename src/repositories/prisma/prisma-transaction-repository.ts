@@ -1,13 +1,21 @@
 import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/internal/transactions/get-paginated-transactions.schema';
-import { prisma } from '../../utils/lib/prisma';
+import { prisma } from '../../utils/libs/prisma';
 import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../transaction-repository';
 import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
 import { DateTime } from 'luxon';
 import { TIMEZONE } from '../../utils/constants/timezone';
-import { GetTransactionsSummaryByAccountIdAndYearType } from '../../utils/schemas/internal/transactions/get-transactions-summary-by-account-id-and-year.schema';
+import { GetTransactionsSummaryType } from '../../utils/schemas/internal/transactions/get-transactions-summary.schema';
 
 export class PrismaTransactionRepository implements TransactionRepository {
-    async getByAccountId(data: GetPaginatedTransactionsInternalType) {
+    async getById(transactionId: string) {
+        const transaction = await prisma.transaction.findUnique({
+            where: { id: transactionId, deleted: false }
+        });
+
+        return transaction;
+    }
+
+    async getPaginated(data: GetPaginatedTransactionsInternalType) {
         const whereClause = {
             accountId: data.accountId,
             deleted: false,
@@ -37,7 +45,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async getByAccountIdInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
+    async getInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
         const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
         const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
 
@@ -71,18 +79,22 @@ export class PrismaTransactionRepository implements TransactionRepository {
     }
 
     async create(data: TransactionCreateInput) {
-        const transaction = await prisma.transaction.create({
-            data
+        const result = await prisma.$transaction(async (prisma) => {
+            const transaction = await prisma.transaction.create({ data });
+            await prisma.account.update({
+                data: { balance: data.type === 'withdraw' ? { decrement: data.amount } : { increment: data.amount } },
+                where: { id: data.accountId }
+            });
+
+            return transaction;
         });
 
-        return transaction;
+        return result;
     }
 
     async delete(transactionId: string) {
         const transaction = await prisma.transaction.update({
-            where: {
-                id: transactionId
-            },
+            where: { id: transactionId },
             data: {
                 deleted: true
             }
@@ -91,7 +103,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return transaction;
     }
 
-    async getTransactionsSummaryByAccountIdAndYear({ accountId, year, type }: GetTransactionsSummaryByAccountIdAndYearType) {
+    async getSummary({ accountId, year, type }: GetTransactionsSummaryType) {
         const startOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).startOf('year').toJSDate();
         const endOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).endOf('year').toJSDate();
 

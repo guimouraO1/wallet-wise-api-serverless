@@ -11,7 +11,7 @@ export class BillService {
     constructor(private billRepository: BillRepository, private accountRepository: AccountRepository, private transactionRepository: TransactionRepository)  {}
 
     async create(data: BillCreateInput): Promise<Bill> {
-        const accountExists = await this.accountRepository.getByAccountId(data.accountId);
+        const accountExists = await this.accountRepository.get(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
@@ -21,7 +21,7 @@ export class BillService {
     }
 
     async getByAccountId(data: FindManyBillsInput): Promise<FindManyBillsResponse> {
-        const accountExists = await this.accountRepository.getByAccountId(data.accountId);
+        const accountExists = await this.accountRepository.get(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
@@ -31,7 +31,7 @@ export class BillService {
     }
 
     async getByAccountIdInPeriod(accountId: string, startDate: string, endDate: string): Promise<FindManyBillsResponse> {
-        const accountExists = await this.accountRepository.getByAccountId(accountId);
+        const accountExists = await this.accountRepository.get(accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
@@ -49,7 +49,7 @@ export class BillService {
     }
 
     async payInvoice(accountId: string, billId: string) {
-        const accountExists = await this.accountRepository.getByAccountId(accountId);
+        const accountExists = await this.accountRepository.get(accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();
         }
@@ -68,7 +68,7 @@ export class BillService {
             await this.transactionRepository.create({
                 accountId,
                 name: bill.name,
-                description: bill.description,
+                description: bill.description ?? '',
                 amount: bill.amount,
                 type: 'withdraw',
                 paymentMethod: 'other'

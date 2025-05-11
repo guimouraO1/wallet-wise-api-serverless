@@ -1,4 +1,4 @@
-import { prisma } from '../../utils/lib/prisma';
+import { prisma } from '../../utils/libs/prisma';
 import { AccountRepository, CreateAccount, UpdateAccountInput } from '../account-repository';
 
 export class PrismaAccountRepository implements AccountRepository {
@@ -18,7 +18,7 @@ export class PrismaAccountRepository implements AccountRepository {
         return account;
     }
 
-    async getByAccountId(accountId: string) {
+    async get(accountId: string) {
         const account = await prisma.account.findUnique({
             where: { id: accountId }
         });
@@ -29,9 +29,7 @@ export class PrismaAccountRepository implements AccountRepository {
     async update(data: UpdateAccountInput) {
         const account = await prisma.account.update({
             data: {
-                balance: data.type === 'withdraw'
-                    ? { decrement: data.amount }
-                    : { increment: data.amount }
+                balance: data.type === 'withdraw' ? { decrement: data.amount } : { increment: data.amount }
             },
             where: { id: data.accountId }
         });

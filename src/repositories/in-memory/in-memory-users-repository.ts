@@ -1,47 +1,39 @@
+import { genSalt, hash } from 'bcryptjs';
 import { User, UserCreateInput, UsersRepository } from '../users-repository';
 import { randomUUID } from 'node:crypto';
-
-interface UserWithPassword extends User {
-  password: string;
-}
+import { env } from '../../utils/libs/env';
+import { Optional } from '../../utils/optional';
 
 export class InMemoryUsersRepository implements UsersRepository {
-    public items: UserWithPassword[] = [];
+    public items: Optional<User, 'Account' | 'password' >[] = [];
 
     async create(data: UserCreateInput) {
-        const userId = randomUUID();
+        const salt = await genSalt(env.PASSWORD_HASH_ROUNDS);
+        const password_hash = await hash(data.password, salt);
 
-        const user: UserWithPassword = {
-            id: userId,
+        const user: Optional<User, 'Account'> = {
+            id: randomUUID(),
             name: data.name,
             email: data.email,
             role: 'standard',
-            password: data.password,
+            ...(data.avatarUrl ? { avatarUrl: data.avatarUrl } : {}),
             created_at: new Date(),
             updated_at: new Date(),
-            email_already_verifyed: false,
-            Account: [{
-                id: randomUUID(),
-                balance: 0,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                userId: userId
-            }]
+            password: password_hash,
+            email_already_verifyed: false
         };
 
         this.items.push(user);
-
         return user;
     }
 
     async getByEmail(email: string) {
         const user = this.items.find((item) => item.email === email);
-
-        return user ?? null;
+        return user as User ?? null;
     }
 
     async getById(id: string) {
         const user = this.items.find((item) => item.id === id);
-        return user ?? null;
+        return user as User ?? null;
     }
 }

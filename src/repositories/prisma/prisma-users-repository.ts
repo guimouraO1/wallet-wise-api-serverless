@@ -1,4 +1,4 @@
-import { prisma } from '../../utils/lib/prisma';
+import { prisma } from '../../utils/libs/prisma';
 import { UserCreateInput, UsersRepository } from '../users-repository';
 
 export class PrismaUsersRepository implements UsersRepository {
@@ -13,14 +13,13 @@ export class PrismaUsersRepository implements UsersRepository {
     }
 
     async create(data: UserCreateInput) {
-        const user = await prisma.user.create({
-            data,
-            omit: {
-                password: true
-            },
-            include: { Account: true }
+        const result = await prisma.$transaction(async (transaction) => {
+            const user = await transaction.user.create({ data });
+            await transaction.account.create({ data: { userId: user.id } });
+
+            return user;
         });
 
-        return user;
+        return result;
     }
 }

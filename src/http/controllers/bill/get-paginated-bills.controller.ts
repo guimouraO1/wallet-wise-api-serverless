@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
-import logger from '../../../utils/lib/logger';
+import logger from '../../../utils/libs/logger';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { StatusCodes } from 'http-status-codes';
 import { BillFactory } from '../../../services/factories/bill.factory';

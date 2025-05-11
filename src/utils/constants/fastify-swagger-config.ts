@@ -1,5 +1,5 @@
 import { jsonSchemaTransform } from 'fastify-type-provider-zod';
-import { env } from '../lib/env';
+import { env } from '../libs/env';
 
 export const fastifySwaggerConfig = {
     openapi: {
@@ -7,12 +7,12 @@ export const fastifySwaggerConfig = {
             title: 'Manga nest Api',
             version: '1.0.0'
         },
-        servers: [
-            {
-                url: `http://localhost:${env.PORT}`,
-                description: 'Development server'
-            }
-        ],
+        // servers: [
+        //     {
+        //         url: `http://localhost:${env.PORT}`,
+        //         description: 'Development server'
+        //     }
+        // ],
         components: {
             securitySchemes: {
                 BearerAuth: {

@@ -21,11 +21,11 @@ import { getTransactionsInPeriod } from './get-transactions-in-period.controller
 import { GetPaginatedTransactionsResponse } from '../../../utils/schemas/responses/transactions/get-paginated-transactions.schema';
 import { DeleteTransactionResponse } from '../../../utils/schemas/responses/transactions/delete-transaction.schema';
 import { UnprocessableEntity } from '../../../utils/schemas/responses/errors/unprocessable-entity.schema';
-import { getTransactionsSummaryByAccountIdAndYear } from './get-transactions-summary-by-account-id-and-year-.controller';
-import { GetTransactionsSummaryByAccountIdAndYearResponse } from
-    '../../../utils/schemas/responses/transactions/get-transactions-summary-by-account-id-and-year.schema';
-import { GetTransactionsSummaryByAccountIdAndYearRequest }
-    from '../../../utils/schemas/request/transactions/get-transactions-summary-by-account-id-and-year.schema';
+import { getTransactionsSummary } from './get-transactions-summary.controller';
+import { GetTransactionsSummaryResponse } from
+    '../../../utils/schemas/responses/transactions/get-transactions-summary.schema';
+import { GetTransactionsSummaryRequest }
+    from '../../../utils/schemas/request/transactions/get-transactions-summary.schema';
 
 export async function transactionRoutes(app: FastifyTypedInstance) {
     app.post('/transaction',
@@ -102,9 +102,9 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
                 params: AccountIdParam,
-                querystring: GetTransactionsSummaryByAccountIdAndYearRequest,
+                querystring: GetTransactionsSummaryRequest,
                 response: {
-                    200: GetTransactionsSummaryByAccountIdAndYearResponse.describe('Finded many transactions in YEAR'),
+                    200: GetTransactionsSummaryResponse.describe('Finded many transactions in YEAR'),
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
                     403: ForbiddenSchema,
@@ -113,7 +113,7 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 }
             }
         },
-        getTransactionsSummaryByAccountIdAndYear
+        getTransactionsSummary
     );
 
     app.delete('/transaction/:accountId/:transactionId',

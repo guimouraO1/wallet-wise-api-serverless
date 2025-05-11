@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../utils/lib/logger';
+import logger from '../../utils/libs/logger';
 import { AccountNotFoundError } from '../../utils/errors/account-not-found-error';
-import { userFactory } from '../../services/factories/user.factory';
 import { AccountIdParamType } from '../../utils/schemas/request/account/account-id-param.schema';
+import { getUserByIdFactory } from '../../use-cases/_factories/get-user-by-id.factory';
 
 const filename = __filename.split(/[/\\]/).pop();
 
@@ -15,8 +15,8 @@ export async function authorizeOwnerOrAdminByAccountIdBody(request: FastifyReque
     }
 
     try {
-        const userService = userFactory();
-        const user = await userService.getUserById(request.user.sub);
+        const userService = getUserByIdFactory();
+        const user = await userService.execute(request.user.sub);
         if (!user) {
             logger.error(`${filename} -> User not found - User ${request.user.sub}, Role ${request.user.role}`);
             return reply.status(StatusCodes.NOT_FOUND).send({ message: 'Not found' });

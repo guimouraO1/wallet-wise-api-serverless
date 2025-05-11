@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { env } from '../utils/lib/env';
+import { env } from './libs/env';
 import { FastifyReply, FastifyRequest, FastifyError } from 'fastify';
 
 interface ValidationErrorItem {
@@ -26,5 +26,5 @@ export function errorHandler(error: ZodFastifyError, request: FastifyRequest, re
         console.error(error);
     }
 
-    return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Internal Server Error' });
+    return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ message: 'Unknown Error' });
 }

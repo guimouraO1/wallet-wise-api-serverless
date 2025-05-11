@@ -1,5 +1,5 @@
 import { fastify } from 'fastify';
-import { env } from './utils/lib/env';
+import { env } from './utils/libs/env';
 import { fastifyJwt } from '@fastify/jwt';
 import { fastifyCookie } from '@fastify/cookie';
 import { fastifyCors } from '@fastify/cors';
@@ -23,9 +23,10 @@ app.setSerializerCompiler(serializerCompiler);
 app.register(fastifyJwt, jwtConfig);
 app.register(fastifyCookie, { secret: env.COOKIE_SECRET });
 app.register(fastifyCors, { origin: true, credentials: true });
-app.register(fastifySwagger, fastifySwaggerConfig);
 
+app.register(fastifySwagger, fastifySwaggerConfig);
 app.register(fastifySwaggerUi, { routePrefix: '/docs' });
+
 app.register(authRoutes);
 app.register(userRoutes);
 app.register(accountRoutes);

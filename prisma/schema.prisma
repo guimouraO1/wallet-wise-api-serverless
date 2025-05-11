@@ -70,6 +70,7 @@ model Account {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   userId    String   @unique
+  // amount    Decimal  @default(0) @db.Decimal(12, 2)
 
   user User @relation(fields: [userId], references: [id])
 
@@ -91,6 +92,7 @@ model Transaction {
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @default(now())
   deleted       Boolean         @default(false)
+  // value    Decimal  @default(0) @db.Decimal(12, 2)
 
   @@map("transactions")
 }
@@ -109,6 +111,7 @@ model Bill {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @default(now())
   deleted          Boolean       @default(false)
+  // price    Decimal  @default(0) @db.Decimal(12, 2)
 
   accountId String
   account   Account @relation(fields: [accountId], references: [id])

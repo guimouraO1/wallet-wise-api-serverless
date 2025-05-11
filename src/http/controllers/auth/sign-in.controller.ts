@@ -1,10 +1,11 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { InvalidCredentialsError } from '../../../utils/errors/invalid-credentials-error';
-import { authFactory } from '../../../services/factories/auth.factory';
-import { env } from '../../../utils/lib/env';
+import { env } from '../../../utils/libs/env';
 import { SignInBodyType } from '../../../utils/schemas/request/auth/sign-in.schema';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../../utils/lib/logger';
+import logger from '../../../utils/libs/logger';
+import { signInFactory } from '../../../use-cases/_factories/sign-in.factory';
+import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
 
 const filename = __filename.split(/[/\\]/).pop();
 
@@ -13,8 +14,8 @@ export async function signIn(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Initiating sign-in process for email: ${email}`);
 
     try {
-        const authService = authFactory();
-        const user = await authService.signIn({ email, password });
+        const authService = signInFactory();
+        const user = await authService.execute({ email, password });
         logger.info(`${filename} -> Authentication successful for user ${user.id}`);
 
         const token = await reply.jwtSign({ role: user.role }, { sign: { sub: user.id } });
@@ -30,6 +31,11 @@ export async function signIn(request: FastifyRequest, reply: FastifyReply) {
 
         logger.info(`${filename} -> Tokens issued successfully for user ID: ${user.id}`);
     } catch (error) {
+        if (error instanceof UserNotFoundError) {
+            logger.error(`${filename} -> Failed sign-in attempt: User not found for email ${email}`);
+            return reply.status(StatusCodes.NOT_FOUND).send({ message: error.message });
+        }
+
         if (error instanceof InvalidCredentialsError) {
             logger.error(`${filename} -> Failed sign-in attempt: Invalid credentials for email ${email}`);
             return reply.status(StatusCodes.UNAUTHORIZED).send({ message: error.message });

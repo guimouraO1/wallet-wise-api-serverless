@@ -8,6 +8,7 @@ import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-re
 import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
 import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
 import { TokenResponseSchema } from '../../../utils/schemas/responses/auth/token.schema';
+import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
 
 export async function authRoutes(app: FastifyTypedInstance) {
     app.post('/sign-in',
@@ -17,9 +18,10 @@ export async function authRoutes(app: FastifyTypedInstance) {
                 tags: ['Auth'],
                 body: SignInBody,
                 response: {
-                    200: TokenResponseSchema.describe('Authenticated'),
+                    200: TokenResponseSchema.describe('Successfully Sign-in'),
                     400: BadRequestSchema,
                     401: UnauthorizedSchema,
+                    404: NotFoundSchema,
                     500: InternalServerErrorSchema
                 }
             }

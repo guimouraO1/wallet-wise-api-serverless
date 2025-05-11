@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CreateUserBody = z.object({
-    avatarUrl: z.string().url().nullable().optional(),
+    avatarUrl: z.string().url().optional(),
     email:     z.string().email().max(50),
     name:      z.string().min(3).max(100),
     password:  z.string().min(6).max(50)

@@ -20,13 +20,11 @@ export class InMemoryAccountsRepository implements AccountRepository {
 
     async getByUserId(userId: string) {
         const account = this.items.find((item) => item.userId === userId);
-
         return account ?? null;
     }
 
-    async getByAccountId(accountId: string) {
+    async get(accountId: string) {
         const account = this.items.find((item) => item.id === accountId);
-
         return account ?? null;
     }
 

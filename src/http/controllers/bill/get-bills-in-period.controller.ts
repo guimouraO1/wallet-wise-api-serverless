@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
-import logger from '../../../utils/lib/logger';
+import logger from '../../../utils/libs/logger';
 import { AccountIdParamType } from '../../../utils/schemas/request/account/account-id-param.schema';
 import { BillFactory } from '../../../services/factories/bill.factory';
 import { GetBillsInPeriodQueryType } from '../../../utils/schemas/request/bills/get-bills-in-period.schema';

@@ -1,7 +1,7 @@
-import { env } from '../../../utils/lib/env';
+import { env } from '../../../utils/libs/env';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../../utils/lib/logger';
+import logger from '../../../utils/libs/logger';
 
 const filename = __filename.split(/[/\\]/).pop();
 

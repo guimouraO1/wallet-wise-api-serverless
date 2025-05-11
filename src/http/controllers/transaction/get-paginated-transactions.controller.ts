@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import { transactionFactory } from '../../../services/factories/transaction.factory';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { GetPaginatedTransactionsQueryType } from '../../../utils/schemas/request/transactions/get-paginated-transactions.schema';
-import logger from '../../../utils/lib/logger';
+import logger from '../../../utils/libs/logger';
 import { AccountIdParamType } from '../../../utils/schemas/request/account/account-id-param.schema';
+import { getTransactionsFactory } from '../../../use-cases/_factories/get-transactions.factory';
 
 const filename = __filename.split(/[/\\]/).pop();
 
@@ -24,8 +24,8 @@ export async function getPaginatedTransactions(request: FastifyRequest, reply: F
     };
 
     try {
-        const transactionService = transactionFactory();
-        const transactions = await transactionService.getByAccountId(dataFormated);
+        const transactionService = getTransactionsFactory();
+        const transactions = await transactionService.execute(dataFormated);
         logger.info(`${filename} -> Get paginated transactions successfully - User ${request.user.sub}`);
 
         reply.status(StatusCodes.OK).send(transactions);

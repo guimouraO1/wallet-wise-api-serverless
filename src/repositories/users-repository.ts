@@ -1,9 +1,9 @@
+import { Optional } from '../utils/optional';
 import { Account } from './account-repository';
 
 type Role = 'admin' | 'standard';
 
 export type User = {
-    Account: Account[];
     name: string;
     id: string;
     email: string;
@@ -12,21 +12,14 @@ export type User = {
     updated_at: Date;
     avatarUrl?: string | null | undefined;
     email_already_verifyed: boolean;
+    password: string;
+    Account: Account[]
 };
 
-export interface UserWithPassword extends User {
-    password: string;
-}
-
-export type UserCreateInput = {
-    name: string;
-    email: string;
-    password: string;
-    avatarUrl?: string | null;
-};
+export type UserCreateInput = Pick<User, 'name' | 'email' | 'password' | 'avatarUrl'>;
 
 export interface UsersRepository {
-    create(data: UserCreateInput): Promise<User>;
-    getByEmail(email: string): Promise<UserWithPassword | null>;
-    getById(id: string): Promise<User | null>;
+    create(data: UserCreateInput): Promise<Optional<User, 'Account'>>;
+    getByEmail(email: string): Promise<Optional<User, 'Account'> | null>;
+    getById(id: string): Promise<Optional<User, 'password'> | null>
 }

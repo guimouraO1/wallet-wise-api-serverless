@@ -21,6 +21,7 @@ export default [
             'no-trailing-spaces': 'error',
             '@typescript-eslint/no-explicit-any': 'off',
             'no-unused-vars': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
             'no-prototype-builtins': 'off'
         }
     }

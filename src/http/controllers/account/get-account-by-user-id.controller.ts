@@ -1,10 +1,10 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../../utils/lib/logger';
-import { accountFactory } from '../../../services/factories/account.factory';
+import logger from '../../../utils/libs/logger';
 import { UserIdParamZod } from '../../../utils/schemas/request/user/user-id-param.schema';
 import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import { getAccountByUserIdFactory } from '../../../use-cases/_factories/get-account-by-user-id.factory';
 
 const filename = __filename.split(/[/\\]/).pop();
 
@@ -13,8 +13,8 @@ export async function getAccount(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Searching for account - User ${userId}`);
 
     try {
-        const accountService = accountFactory();
-        const account = await accountService.getAccountByUserId(userId);
+        const accountService = getAccountByUserIdFactory();
+        const account = await accountService.execute(userId);
         logger.info(`${filename} -> Account found successfully - User ${userId}`);
 
         reply.status(StatusCodes.OK).send(account);

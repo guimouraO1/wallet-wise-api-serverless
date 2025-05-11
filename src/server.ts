@@ -1,7 +1,7 @@
 import cluster from 'cluster';
 import os from 'os';
 import app from './app';
-import { env } from './utils/lib/env';
+import { env } from './utils/libs/env';
 
 const workersMap: { [key: string]: number } = {};
 

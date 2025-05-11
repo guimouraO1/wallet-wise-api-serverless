@@ -1,1 +1,0 @@
-export const PASSWORD_HASH_ROUNDS: number = 10;

@@ -4,7 +4,7 @@ import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/intern
 import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
 import { DateTime } from 'luxon';
 import { TIMEZONE } from '../../utils/constants/timezone';
-import { GetTransactionsSummaryByAccountIdAndYearType } from '../../utils/schemas/internal/transactions/get-transactions-summary-by-account-id-and-year.schema';
+import { GetTransactionsSummaryType } from '../../utils/schemas/internal/transactions/get-transactions-summary.schema';
 
 export class InMemoryTransactionRepository implements TransactionRepository {
     public items: Transaction[] = [];
@@ -13,7 +13,7 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         const transaction: Transaction = {
             name: data.name,
             id: randomUUID(),
-            description: data.description ?? null,
+            description: data.description ?? 's',
             amount: data.amount,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -27,16 +27,33 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return transaction;
     }
 
-    async getByAccountId(data: GetPaginatedTransactionsInternalType) {
-        const transactions = this.items.filter((item) => item.accountId === data.accountId).slice((data.page - 1) * data.offset, data.page * data.offset);
+    async getPaginated(data: GetPaginatedTransactionsInternalType) {
+        const filtered = this.items.filter((item) => {
+            const matchesAccount = item.accountId === data.accountId;
+            const matchesType = data.type ? item.type === data.type : true;
+            const matchesPaymentMethod = data.paymentMethod ? item.paymentMethod === data.paymentMethod : true;
+            const matchesName = data.name ? item.name?.toLowerCase().includes(data.name.toLowerCase()) : true;
+            // const notDeleted = item.deleted === false;
+
+            return matchesAccount && matchesType && matchesPaymentMethod && matchesName;
+        });
+
+        const transactions = filtered.slice((data.page - 1) * data.offset, data.page * data.offset);
+
         const response = {
-            transactionsCount: this.items.length,
+            transactionsCount: filtered.length,
             transactions
         };
+
         return response;
     }
 
-    async getByAccountIdInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
+    async getById(transactionId: string) {
+        const transaction = this.items.find((item) => item.id === transactionId);
+        return transaction ?? null;
+    }
+
+    async getInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
         const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
         const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
 
@@ -56,7 +73,7 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async getTransactionsSummaryByAccountIdAndYear({ accountId, year, type }: GetTransactionsSummaryByAccountIdAndYearType) {
+    async getSummary({ accountId, year, type }: GetTransactionsSummaryType) {
 
         const startOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).startOf('year').toJSDate();
         const endOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).endOf('year').toJSDate();
@@ -92,5 +109,4 @@ export class InMemoryTransactionRepository implements TransactionRepository {
 
         return deletedTransaction;
     }
-
 }

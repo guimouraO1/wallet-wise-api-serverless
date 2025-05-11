@@ -5,9 +5,9 @@ import { AccountNotFoundError } from '../../utils/errors/account-not-found-error
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { BillService } from '../bill.service';
 import { InMemoryTransactionRepository } from '../../repositories/in-memory/in-memory-transaction-repository';
-import { FAKE_USER } from '../../utils/constants/fake-user';
 import { Account } from '../../repositories/account-repository';
 import { User } from '../../repositories/users-repository';
+import { fakerPT_BR } from '@faker-js/faker';
 
 let usersRepository: InMemoryUsersRepository;
 let accountRepository: InMemoryAccountsRepository;
@@ -25,7 +25,11 @@ describe('Bill Service Tests', () => {
         transactionRepository = new InMemoryTransactionRepository();
         sut = new BillService(billRepository, accountRepository, transactionRepository);
 
-        user = await usersRepository.create({ name: FAKE_USER.name, email: FAKE_USER.email, password: FAKE_USER.password });
+        user = await usersRepository.create({
+            name: fakerPT_BR.person.fullName(),
+            email: fakerPT_BR.internet.email(),
+            password: fakerPT_BR.internet.password()
+        });
         account = await accountRepository.create({ userId: user.id });
     });
 
