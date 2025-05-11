@@ -5,5 +5,5 @@ build
 log
 dist
 .vercel
-package-lock.json
+# package-lock.json
 .idea
