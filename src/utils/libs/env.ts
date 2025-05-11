@@ -22,7 +22,6 @@ const _env = envShema.safeParse(process.env);
 
 if (_env.success === false) {
     console.error('Invalid environment variables.', _env.error.format());
-
     throw new Error('Invalid enviroment variables.');
 }
 // console.log(process.env);
