@@ -1,19 +1,18 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
 import { getTransactionsSummaryFactory } from '../../../use-cases/_factories/get-transactions-summary.factory';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import logger from '../../../utils/libs/logger';
-import { AccountIdParamType } from '../../../utils/schemas/request/account/account-id-param.schema';
-import { GetTransactionsSummaryRequestType }
-    from '../../../utils/schemas/request/transactions/get-transactions-summary.schema';
+import { AccountIdFromParam } from '../../../utils/types/account/account-id-from-param';
+import { GetTransactionsSummary } from '../../../utils/types/transactions/get-transactions-summary-request';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function getTransactionsSummary(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Get transactions summary - User ${request.user.sub}`);
 
-    const { year, type } = request.query as GetTransactionsSummaryRequestType;
-    const { accountId } = request.params as AccountIdParamType;
+    const { year, type } = request.query as GetTransactionsSummary;
+    const { accountId } = request.params as AccountIdFromParam;
 
     try {
         const getTransactionsUseCase = getTransactionsSummaryFactory();

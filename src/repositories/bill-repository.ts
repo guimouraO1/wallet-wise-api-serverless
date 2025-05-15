@@ -1,36 +1,8 @@
+import { Bill } from '../utils/types/bills/bill';
+import { CreateBill } from '../utils/types/bills/create-bill';
+
 type BillType = 'recurring' | 'installment'
 type BillFrequency = 'monthly' | 'weekly' | 'annual'
-
-export type BillCreateInput = {
-    name: string;
-    description?: string | null;
-    amount: number;
-    billType: BillType;
-    dueDay?: number | null;
-    frequency: BillFrequency;
-    installments?: number | null;
-    paidInstallments: number;
-    active: boolean;
-    createdAt?: Date | string;
-    updatedAt?: Date | string;
-    accountId: string;
-};
-
-export type Bill = {
-    name: string;
-    id: string;
-    description: string | null;
-    amount: number;
-    billType: BillType;
-    dueDay?: number | null;
-    frequency?: BillFrequency | null;
-    active: boolean;
-    accountId: string;
-    installments: number | null;
-    paidInstallments: number | null;
-    createdAt: Date;
-    updatedAt: Date;
-}
 
 export type FindManyBillsInput = {
     name?: string;
@@ -58,10 +30,10 @@ export type FindManyBillsResponse = {
 }
 
 export interface BillRepository {
-    create(data: BillCreateInput): Promise<Bill>;
+    create(data: CreateBill): Promise<Bill>;
     getByAccountId(data: FindManyBillsInput): Promise<FindManyBillsResponse>;
     getByAccountIdInPeriod(accountId: string, startDate: Date, endDate: Date): Promise<FindManyBillsResponse>;
-    delete(billId: string): Promise<Bill>;
-    payInvoice(paidInstallments: number, billId: string, active: boolean): Promise<Bill>;
+    delete(id: string): Promise<Bill>;
+    payBill(bill: Bill): Promise<Bill>;
     getById(billId: string): Promise<Bill | null>;
 }

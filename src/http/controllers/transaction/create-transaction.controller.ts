@@ -1,17 +1,16 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../../utils/libs/logger';
-import { CreateTransactionBodyType } from '../../../utils/schemas/request/transactions/create-transaction.schema';
-import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
-import { YouAreNotElonError } from '../../../utils/errors/elon-error';
-import { CreateTransactionError } from '../../../utils/errors/create-transaction-error';
 import { createTransactionFactory } from '../../../use-cases/_factories/create-transaction.factory';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import { CreateTransactionError } from '../../../utils/errors/create-transaction-error';
+import { YouAreNotElonError } from '../../../utils/errors/elon-error';
+import logger from '../../../utils/libs/logger';
+import { CreateTransaction } from '../../../utils/types/transactions/create-transaction';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function createTransaction(request: FastifyRequest, reply: FastifyReply) {
-    const data = request.body as CreateTransactionBodyType;
-
+    const data = request.body as CreateTransaction;
     logger.info(`${filename} -> Initiating create transaction - User ${request.user.sub}`);
 
     try {

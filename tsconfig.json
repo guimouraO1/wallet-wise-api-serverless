@@ -8,6 +8,7 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     // "baseUrl": ".",
+    "types": ["vitest/globals"]
   },
-  "include": ["src", "api"]
+  "include": ["src", "api", "test/unit/account", "test/unit/auth", "test/unit/bills", "test/unit/transactions", "test/unit/user"]
 }

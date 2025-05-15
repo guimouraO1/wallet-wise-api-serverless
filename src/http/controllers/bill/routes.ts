@@ -1,27 +1,26 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
+import { ZAccountIdFromParam } from '../../../utils/types/account/account-id-from-param';
+import { ZCreateBillBody } from '../../../utils/types/bills/create-bill-body';
+import { ZDeleteBillParams } from '../../../utils/types/bills/delete-bill';
+import { ZGetBills } from '../../../utils/types/bills/get-bills';
+import { ZGetBillsInPeriodQuery } from '../../../utils/types/bills/get-bills-in-period';
+import { ZGetPaginatedBills } from '../../../utils/types/bills/get-paginated-bills';
+import { ZPayBill } from '../../../utils/types/bills/pay-bill';
+import { ZBadRequest } from '../../../utils/types/errors/bad-request';
+import { ZConflict } from '../../../utils/types/errors/conflict';
+import { ZForbidden } from '../../../utils/types/errors/forbidden';
+import { ZInternalServerError } from '../../../utils/types/errors/internal-server-error';
+import { ZNotFound } from '../../../utils/types/errors/not-found';
+import { ZUnauthorized } from '../../../utils/types/errors/unauthorized';
+import { ZObjectVoid } from '../../../utils/types/others/object-void';
+import { authorizeOwnerOrAdminByAccountIdBody } from '../../middlewares/authorize-by-account-id-body';
+import { authorizeOwnerOrAdminByAccountIdParam } from '../../middlewares/authorize-by-account-id-param';
 import { verifyJwt } from '../../middlewares/verify-jwt';
 import { createBill } from './create-bill.controller';
-import { CreatedSchema } from '../../../utils/schemas/responses/default-responses/created.schema';
-import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
-import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
-import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
-import { getPaginatedBills } from './get-paginated-bills.controller';
-import { authorizeOwnerOrAdminByAccountIdParam } from '../../middlewares/authorize-by-account-id-param';
-import { CreateBillBody } from '../../../utils/schemas/request/bills/create-bill.schema';
-import { authorizeOwnerOrAdminByAccountIdBody } from '../../middlewares/authorize-by-account-id-body';
-import { AccountIdParam } from '../../../utils/schemas/request/account/account-id-param.schema';
 import { deleteBill } from './delete-bill.controller';
-import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
-import { DeleteBillParam } from '../../../utils/schemas/request/bills/delete-bill.schema';
-import { DeletedSchemaZod } from '../../../utils/schemas/responses/default-responses/deleted.schema';
-import { ConflictSchema } from '../../../utils/schemas/responses/errors/conflict.schema';
-import { PayInvoiceBody } from '../../../utils/schemas/request/bills/pay-invoice.schema';
-import { payInvoice } from './pay-invoice.controller';
-import { GetPaginatedBillsQuery } from '../../../utils/schemas/request/bills/get-paginated-bills.schema';
-import { GetPaginatedBillsResponse } from '../../../utils/schemas/responses/bills/get-paginated-bills.schema';
-import { GetBillsInPeriodQuery } from '../../../utils/schemas/request/bills/get-bills-in-period.schema';
 import { getBillsInPeriod } from './get-bills-in-period.controller';
+import { getPaginatedBills } from './get-paginated-bills.controller';
+import { payBill } from './pay-bill.controller';
 
 export async function billRoutes(app: FastifyTypedInstance) {
     app.post('/bill',
@@ -32,13 +31,13 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Create Bill',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                body: CreateBillBody.describe('Create Bill Payload'),
+                body: ZCreateBillBody.describe('Create Bill Payload'),
                 response: {
-                    201: CreatedSchema.describe('Bill Created'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    500: InternalServerErrorSchema
+                    201: ZObjectVoid.describe('Bill Created'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    500: ZInternalServerError
                 }
             }
         },
@@ -52,14 +51,14 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Find Many Paginated Bills',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParam,
-                querystring: GetPaginatedBillsQuery.describe('Create Bill Payload'),
+                params: ZAccountIdFromParam,
+                querystring: ZGetPaginatedBills.describe('Create Bill Payload'),
                 response: {
-                    200: GetPaginatedBillsResponse.describe('Finded Many Bills'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    500: InternalServerErrorSchema
+                    200: ZGetBills.describe('Finded Many Bills'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    500: ZInternalServerError
                 }
             }
         },
@@ -73,14 +72,14 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Get Bills in period',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParam,
-                querystring: GetBillsInPeriodQuery.describe('Get bills in period'),
+                params: ZAccountIdFromParam,
+                querystring: ZGetBillsInPeriodQuery.describe('Get bills in period'),
                 response: {
-                    200: GetPaginatedBillsResponse.describe('Finded Many Bills'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    500: InternalServerErrorSchema
+                    200: ZGetBills.describe('Finded Many Bills'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    500: ZInternalServerError
                 }
             }
         },
@@ -94,40 +93,39 @@ export async function billRoutes(app: FastifyTypedInstance) {
                 description: 'Delete Bill',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                params: DeleteBillParam,
+                params: ZDeleteBillParams,
                 response: {
-                    200: DeletedSchemaZod,
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    404: NotFoundSchema.describe('Account Not Found'),
-                    500: InternalServerErrorSchema
+                    201: ZObjectVoid.describe('Bill deleted'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    404: ZNotFound.describe('Account Not Found'),
+                    500: ZInternalServerError
                 }
             }
         },
         deleteBill
     );
 
-    app.post('/invoice/bill',
+    app.post('/bill/pay/:accountId',
         {
-            onRequest: [verifyJwt],
-            preHandler: [authorizeOwnerOrAdminByAccountIdBody],
+            onRequest: [verifyJwt, authorizeOwnerOrAdminByAccountIdParam],
             schema: {
-                description: 'Pay invoice',
+                description: 'Pay bill',
                 tags: ['Bill'],
                 security: [{ BearerAuth: [] }],
-                body: PayInvoiceBody,
+                body: ZPayBill,
                 response: {
-                    200: CreatedSchema,
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    404: NotFoundSchema.describe('Account or bill Not Found'),
-                    409: ConflictSchema,
-                    500: InternalServerErrorSchema
+                    201: ZObjectVoid.describe('Bill paid'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    404: ZNotFound.describe('Account or bill Not Found'),
+                    409: ZConflict,
+                    500: ZInternalServerError
                 }
             }
         },
-        payInvoice
+        payBill
     );
 }

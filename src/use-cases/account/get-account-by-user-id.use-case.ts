@@ -1,4 +1,4 @@
-import { Account, AccountRepository } from '../../repositories/account-repository';
+import { AccountRepository } from '../../repositories/account-repository';
 import { UsersRepository } from '../../repositories/users-repository';
 import { AccountNotFoundError } from '../../utils/errors/account-not-found-error';
 import { UserNotFoundError } from '../../utils/errors/user-not-found-error';

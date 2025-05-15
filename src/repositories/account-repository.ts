@@ -1,26 +1,9 @@
-import { TransactionType } from './transaction-repository';
-
-export type Account = {
-    id: string;
-    balance: number;
-    createdAt: Date;
-    updatedAt: Date;
-    userId: string;
-}
-
-export type CreateAccount = {
-    userId: string;
-}
-
-export type UpdateAccountInput = {
-    amount: number;
-    type: TransactionType;
-    accountId: string;
-}
+import { Account } from '../utils/types/account/account';
+import { UpdateAccount } from '../utils/types/account/update-account';
 
 export interface AccountRepository {
-    create(data: CreateAccount): Promise<Account>;
+    create(userId: string): Promise<Account>;
     getByUserId(userId: string): Promise<Account | null>;
     get(accountId: string): Promise<Account | null>;
-    update(data: UpdateAccountInput): Promise<Account>;
+    update(data: UpdateAccount): Promise<Account>;
 }

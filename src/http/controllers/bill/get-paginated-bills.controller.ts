@@ -1,10 +1,10 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import logger from '../../../utils/libs/logger';
-import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import { BillFactory } from '../../../services/factories/bill.factory';
 import { FindManyBillsInput, FindManyBillsInputString } from '../../../repositories/bill-repository';
-import { AccountIdParamType } from '../../../utils/schemas/request/account/account-id-param.schema';
+import { getBillsFactory } from '../../../use-cases/_factories/get-bills.factory';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import logger from '../../../utils/libs/logger';
+import { AccountIdFromParam } from '../../../utils/types/account/account-id-from-param';
 
 const filename = __filename.split(/[/\\]/).pop();
 
@@ -12,7 +12,7 @@ export async function getPaginatedBills(request: FastifyRequest, reply: FastifyR
     logger.info(`${filename} -> Get paginated bills - User ${request.user.sub}`);
 
     const data = request.query as FindManyBillsInputString;
-    const { accountId } = request.params as AccountIdParamType;
+    const { accountId } = request.params as AccountIdFromParam;
 
     const dataFormated = {
         ...data,
@@ -23,8 +23,8 @@ export async function getPaginatedBills(request: FastifyRequest, reply: FastifyR
     };
 
     try {
-        const billService = BillFactory();
-        const bills = await billService.getByAccountId(dataFormated as FindManyBillsInput);
+        const billService = getBillsFactory();
+        const bills = await billService.execute(dataFormated as FindManyBillsInput);
         logger.info(`${filename} -> Bills found successfully - User ${request.user.sub}`);
 
         return reply.status(StatusCodes.OK).send(bills);

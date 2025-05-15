@@ -1,13 +1,13 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
-import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
-import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
-import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
+import { ZAccount } from '../../../utils/types/account/account';
+import { ZForbidden } from '../../../utils/types/errors/forbidden';
+import { ZInternalServerError } from '../../../utils/types/errors/internal-server-error';
+import { ZNotFound } from '../../../utils/types/errors/not-found';
+import { ZUnauthorized } from '../../../utils/types/errors/unauthorized';
+import { ZUserIdFromParam } from '../../../utils/types/user/user-id-from-param';
+import { authorizeOwnerOrAdminByUserIdParam } from '../../middlewares/authorize-by-user-id-param';
 import { verifyJwt } from '../../middlewares/verify-jwt';
 import { getAccount } from './get-account-by-user-id.controller';
-import { authorizeOwnerOrAdminByUserIdParam } from '../../middlewares/authorize-by-user-id-param';
-import { UserIdParam } from '../../../utils/schemas/request/user/user-id-param.schema';
-import { GetAccountResponse } from '../../../utils/schemas/responses/account/get-account.schema';
 
 export async function accountRoutes(app: FastifyTypedInstance) {
     app.get('/account/:userId',
@@ -17,13 +17,13 @@ export async function accountRoutes(app: FastifyTypedInstance) {
                 description: 'Get Account',
                 tags: ['Account'],
                 security: [{ BearerAuth: [] }],
-                params: UserIdParam,
+                params: ZUserIdFromParam,
                 response: {
-                    200: GetAccountResponse,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    404: NotFoundSchema,
-                    500: InternalServerErrorSchema
+                    200: ZAccount,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    404: ZNotFound,
+                    500: ZInternalServerError
                 }
             }
         },

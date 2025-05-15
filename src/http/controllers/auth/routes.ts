@@ -1,14 +1,14 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
-import { signIn } from './sign-in.controller';
+import { ZSignIn } from '../../../utils/types/auth/sign-in';
+import { ZTokenObject } from '../../../utils/types/auth/token';
+import { ZBadRequest } from '../../../utils/types/errors/bad-request';
+import { ZInternalServerError } from '../../../utils/types/errors/internal-server-error';
+import { ZNotFound } from '../../../utils/types/errors/not-found';
+import { ZUnauthorized } from '../../../utils/types/errors/unauthorized';
+import { ZObjectVoid } from '../../../utils/types/others/object-void';
 import { refreshToken } from './refresh-token.controller';
+import { signIn } from './sign-in.controller';
 import { signOut } from './sign-out.controller';
-import { SignInBody } from '../../../utils/schemas/request/auth/sign-in.schema';
-import { SignOutResponse } from '../../../utils/schemas/responses/auth/sign-out.schema';
-import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
-import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
-import { TokenResponseSchema } from '../../../utils/schemas/responses/auth/token.schema';
-import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
 
 export async function authRoutes(app: FastifyTypedInstance) {
     app.post('/sign-in',
@@ -16,13 +16,13 @@ export async function authRoutes(app: FastifyTypedInstance) {
             schema: {
                 description: 'Sign In',
                 tags: ['Auth'],
-                body: SignInBody,
+                body: ZSignIn,
                 response: {
-                    200: TokenResponseSchema.describe('Successfully Sign-in'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    404: NotFoundSchema,
-                    500: InternalServerErrorSchema
+                    200: ZTokenObject.describe('Successfully Sign-in'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    404: ZNotFound,
+                    500: ZInternalServerError
                 }
             }
         },
@@ -35,9 +35,9 @@ export async function authRoutes(app: FastifyTypedInstance) {
                 description: 'Sign out',
                 tags: ['Auth'],
                 response: {
-                    200: SignOutResponse.describe('Successfully sign-out'),
-                    401: UnauthorizedSchema,
-                    500: InternalServerErrorSchema
+                    200: ZObjectVoid.describe('Successfully sign-out'),
+                    401: ZUnauthorized,
+                    500: ZInternalServerError
                 }
             }
         },
@@ -50,9 +50,9 @@ export async function authRoutes(app: FastifyTypedInstance) {
                 description: 'Refresh token',
                 tags: ['Auth'],
                 response: {
-                    200: TokenResponseSchema.describe('Successfully refresh token'),
-                    401: UnauthorizedSchema,
-                    500: InternalServerErrorSchema
+                    200: ZTokenObject.describe('Successfully refresh token'),
+                    401: ZUnauthorized,
+                    500: ZInternalServerError
                 }
             }
         },

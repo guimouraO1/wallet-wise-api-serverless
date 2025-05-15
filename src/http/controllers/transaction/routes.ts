@@ -1,31 +1,27 @@
 import { FastifyTypedInstance } from '../../../@types/fastify-type';
-import { BadRequestSchema } from '../../../utils/schemas/responses/errors/bad-request.schema';
-import { InternalServerErrorSchema } from '../../../utils/schemas/responses/errors/internal-server-error.schema';
-import { UnauthorizedSchema } from '../../../utils/schemas/responses/errors/unauthorized.schema';
-import { CreatedSchema } from '../../../utils/schemas/responses/default-responses/created.schema';
-import { ForbiddenSchema } from '../../../utils/schemas/responses/errors/forbidden.schema';
-import { createTransaction } from './create-transaction.controller';
-import { verifyJwt } from '../../middlewares/verify-jwt';
-import { CreateTransactionBody } from '../../../utils/schemas/request/transactions/create-transaction.schema';
-import { GetPaginatedTransactionsQuery }
-    from '../../../utils/schemas/request/transactions/get-paginated-transactions.schema';
-import { getPaginatedTransactions } from './get-paginated-transactions.controller';
-import { authorizeOwnerOrAdminByAccountIdParam } from '../../middlewares/authorize-by-account-id-param';
-import { NotFoundSchema } from '../../../utils/schemas/responses/errors/not-found.schema';
+import { ZAccountIdFromParam } from '../../../utils/types/account/account-id-from-param';
+import { ZBadRequest } from '../../../utils/types/errors/bad-request';
+import { ZForbidden } from '../../../utils/types/errors/forbidden';
+import { ZInternalServerError } from '../../../utils/types/errors/internal-server-error';
+import { ZNotFound } from '../../../utils/types/errors/not-found';
+import { ZUnauthorized } from '../../../utils/types/errors/unauthorized';
+import { ZUnprocessableEntity } from '../../../utils/types/errors/unprocessable-entity';
+import { ZObjectVoid } from '../../../utils/types/others/object-void';
+import { ZCreateTransaction } from '../../../utils/types/transactions/create-transaction';
+import { ZDeleteTransactionParams } from '../../../utils/types/transactions/delete-transaction';
+import { ZGetPaginatedTransactions } from '../../../utils/types/transactions/get-paginated-transactions';
+import { ZGetTransactionsResponse } from '../../../utils/types/transactions/get-transactions';
+import { ZGetTransactionsInPeriod } from '../../../utils/types/transactions/get-transactions-in-period';
+import { ZGetTransactionsSummary } from '../../../utils/types/transactions/get-transactions-summary-request';
+import { ZGetTransactionsSummaryResponse } from '../../../utils/types/transactions/get-transactions-summary-response';
 import { authorizeOwnerOrAdminByAccountIdBody } from '../../middlewares/authorize-by-account-id-body';
+import { authorizeOwnerOrAdminByAccountIdParam } from '../../middlewares/authorize-by-account-id-param';
+import { verifyJwt } from '../../middlewares/verify-jwt';
+import { createTransaction } from './create-transaction.controller';
 import { deleteTransaction } from './delete-transaction.controller';
-import { DeleteTransactionParams } from '../../../utils/schemas/request/transactions/delete-transaction.schema';
-import { AccountIdParam } from '../../../utils/schemas/request/account/account-id-param.schema';
-import { GetTransactionsInPeriodQuery } from '../../../utils/schemas/request/transactions/get-transactions-in-period.schema';
+import { getPaginatedTransactions } from './get-paginated-transactions.controller';
 import { getTransactionsInPeriod } from './get-transactions-in-period.controller';
-import { GetPaginatedTransactionsResponse } from '../../../utils/schemas/responses/transactions/get-paginated-transactions.schema';
-import { DeleteTransactionResponse } from '../../../utils/schemas/responses/transactions/delete-transaction.schema';
-import { UnprocessableEntity } from '../../../utils/schemas/responses/errors/unprocessable-entity.schema';
 import { getTransactionsSummary } from './get-transactions-summary.controller';
-import { GetTransactionsSummaryResponse } from
-    '../../../utils/schemas/responses/transactions/get-transactions-summary.schema';
-import { GetTransactionsSummaryRequest }
-    from '../../../utils/schemas/request/transactions/get-transactions-summary.schema';
 
 export async function transactionRoutes(app: FastifyTypedInstance) {
     app.post('/transaction',
@@ -36,14 +32,14 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Create Transaction',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                body: CreateTransactionBody,
+                body: ZCreateTransaction,
                 response: {
-                    201: CreatedSchema.describe('Transaction Created'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    422: UnprocessableEntity,
-                    500: InternalServerErrorSchema
+                    201: ZObjectVoid.describe('Transaction Created'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    422: ZUnprocessableEntity,
+                    500: ZInternalServerError
                 }
             }
         },
@@ -57,15 +53,15 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Find many transactions',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParam,
-                querystring: GetPaginatedTransactionsQuery,
+                params: ZAccountIdFromParam,
+                querystring: ZGetPaginatedTransactions,
                 response: {
-                    200: GetPaginatedTransactionsResponse.describe('Finded many transactions'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    404: NotFoundSchema.describe('Account Not Found'),
-                    500: InternalServerErrorSchema
+                    200: ZGetTransactionsResponse.describe('Finded many transactions'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    404: ZNotFound.describe('Account Not Found'),
+                    500: ZInternalServerError
                 }
             }
         },
@@ -79,15 +75,15 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Find many transactions',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParam,
-                querystring: GetTransactionsInPeriodQuery,
+                params: ZAccountIdFromParam,
+                querystring: ZGetTransactionsInPeriod,
                 response: {
-                    200: GetPaginatedTransactionsResponse.describe('Finded many transactions in period'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    404: NotFoundSchema.describe('Account Not Found'),
-                    500: InternalServerErrorSchema
+                    200: ZGetTransactionsResponse.describe('Finded many transactions in period'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    404: ZNotFound.describe('Account Not Found'),
+                    500: ZInternalServerError
                 }
             }
         },
@@ -101,15 +97,15 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Find transactions by year',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                params: AccountIdParam,
-                querystring: GetTransactionsSummaryRequest,
+                params: ZAccountIdFromParam,
+                querystring: ZGetTransactionsSummary,
                 response: {
-                    200: GetTransactionsSummaryResponse.describe('Finded many transactions in YEAR'),
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    404: NotFoundSchema.describe('Account Not Found'),
-                    500: InternalServerErrorSchema
+                    200: ZGetTransactionsSummaryResponse.describe('Finded many transactions in YEAR'),
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    404: ZNotFound.describe('Account Not Found'),
+                    500: ZInternalServerError
                 }
             }
         },
@@ -123,14 +119,14 @@ export async function transactionRoutes(app: FastifyTypedInstance) {
                 description: 'Delete transaction',
                 tags: ['Transaction'],
                 security: [{ BearerAuth: [] }],
-                params: DeleteTransactionParams,
+                params: ZDeleteTransactionParams,
                 response: {
-                    200: DeleteTransactionResponse,
-                    400: BadRequestSchema,
-                    401: UnauthorizedSchema,
-                    403: ForbiddenSchema,
-                    404: NotFoundSchema.describe('Account Not Found'),
-                    500: InternalServerErrorSchema
+                    200: ZObjectVoid,
+                    400: ZBadRequest,
+                    401: ZUnauthorized,
+                    403: ZForbidden,
+                    404: ZNotFound.describe('Account Not Found'),
+                    500: ZInternalServerError
                 }
             }
         },

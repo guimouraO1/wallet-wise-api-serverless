@@ -1,12 +1,12 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
 import logger from '../../utils/libs/logger';
-import { UserIdParamZod } from '../../utils/schemas/request/user/user-id-param.schema';
+import { UserIdFromParam } from '../../utils/types/user/user-id-from-param';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function authorizeOwnerOrAdminByUserIdParam(request: FastifyRequest, reply: FastifyReply) {
-    const { userId } = request.params as UserIdParamZod;
+    const { userId } = request.params as UserIdFromParam;
 
     if (request.user.role === 'admin') {
         return;

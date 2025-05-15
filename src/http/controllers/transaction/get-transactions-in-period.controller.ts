@@ -1,18 +1,18 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
+import { getTransactionsInPeriodFactory } from '../../../use-cases/_factories/get-transactions-in-period.factory';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import logger from '../../../utils/libs/logger';
-import { AccountIdParamType } from '../../../utils/schemas/request/account/account-id-param.schema';
-import { GetTransactionsInPeriodQueryType } from '../../../utils/schemas/request/transactions/get-transactions-in-period.schema';
-import { getTransactionsInPeriodFactory } from '../../../use-cases/_factories/get-transactions-in-period.factory';
+import { AccountIdFromParam } from '../../../utils/types/account/account-id-from-param';
+import { GetTransactionsInPeriod } from '../../../utils/types/transactions/get-transactions-in-period';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function getTransactionsInPeriod(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Get transactions in period - User ${request.user.sub}`);
 
-    const { startDate, endDate, type } = request.query as GetTransactionsInPeriodQueryType;
-    const { accountId } = request.params as AccountIdParamType;
+    const { startDate, endDate, type } = request.query as GetTransactionsInPeriod;
+    const { accountId } = request.params as AccountIdFromParam;
 
     try {
         const transactionService = getTransactionsInPeriodFactory();

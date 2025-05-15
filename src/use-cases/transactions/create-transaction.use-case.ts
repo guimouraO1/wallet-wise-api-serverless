@@ -1,13 +1,14 @@
 import { AccountRepository } from '../../repositories/account-repository';
-import { TransactionRepository, TransactionCreateInput } from '../../repositories/transaction-repository';
+import { TransactionRepository } from '../../repositories/transaction-repository';
 import { AccountNotFoundError } from '../../utils/errors/account-not-found-error';
-import { YouAreNotElonError } from '../../utils/errors/elon-error';
 import { CreateTransactionError } from '../../utils/errors/create-transaction-error';
+import { YouAreNotElonError } from '../../utils/errors/elon-error';
+import { CreateTransaction } from '../../utils/types/transactions/create-transaction';
 
 export class CreateTransactionUseCase {
     constructor(private transactionRepository: TransactionRepository, private accountRepository: AccountRepository)  {}
 
-    async execute(data: TransactionCreateInput) {
+    async execute(data: CreateTransaction) {
         const accountExists = await this.accountRepository.get(data.accountId);
         if (!accountExists) {
             throw new AccountNotFoundError();

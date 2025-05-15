@@ -1,16 +1,18 @@
 import { randomUUID } from 'node:crypto';
-import { Account, AccountRepository, CreateAccount, UpdateAccountInput } from '../account-repository';
+import { Account } from '../../utils/types/account/account';
+import { UpdateAccount } from '../../utils/types/account/update-account';
+import { AccountRepository } from '../account-repository';
 
 export class InMemoryAccountsRepository implements AccountRepository {
     public items: Account[] = [];
 
-    async create(data: CreateAccount) {
+    async create(userId: string) {
         const account: Account = {
             id: randomUUID(),
             balance: 0,
             createdAt: new Date(),
             updatedAt: new Date(),
-            userId: data.userId
+            userId
         };
 
         this.items.push(account);
@@ -28,12 +30,12 @@ export class InMemoryAccountsRepository implements AccountRepository {
         return account ?? null;
     }
 
-    async update(data: UpdateAccountInput) {
+    async update(data: UpdateAccount) {
         const index = this.items.findIndex(item => item.id === data.accountId);
 
         this.items[index].balance = data.type === 'withdraw'
-            ? this.items[index].balance - data.amount
-            : this.items[index].balance + data.amount;
+            ? this.items[index].balance - data.balance
+            : this.items[index].balance + data.balance;
 
         return this.items[index];
     }

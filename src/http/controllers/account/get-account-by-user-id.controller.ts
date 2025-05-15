@@ -1,15 +1,15 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../../utils/libs/logger';
-import { UserIdParamZod } from '../../../utils/schemas/request/user/user-id-param.schema';
-import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
-import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import { getAccountByUserIdFactory } from '../../../use-cases/_factories/get-account-by-user-id.factory';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
+import logger from '../../../utils/libs/logger';
+import { UserIdFromParam } from '../../../utils/types/user/user-id-from-param';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function getAccount(request: FastifyRequest, reply: FastifyReply) {
-    const { userId } = request.params as UserIdParamZod;
+    const { userId } = request.params as UserIdFromParam;
     logger.info(`${filename} -> Searching for account - User ${userId}`);
 
     try {

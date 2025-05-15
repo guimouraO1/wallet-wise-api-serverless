@@ -1,15 +1,17 @@
-import { randomUUID } from 'node:crypto';
-import { Transaction, TransactionCreateInput, TransactionRepository } from '../transaction-repository';
-import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/internal/transactions/get-paginated-transactions.schema';
-import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
 import { DateTime } from 'luxon';
+import { randomUUID } from 'node:crypto';
 import { TIMEZONE } from '../../utils/constants/timezone';
-import { GetTransactionsSummaryType } from '../../utils/schemas/internal/transactions/get-transactions-summary.schema';
+import { CreateTransaction } from '../../utils/types/transactions/create-transaction';
+import { GetPaginatedTransactionsInternal } from '../../utils/types/transactions/internal/get-paginated-transactions';
+import { GetTransactionsInPeriodInternal } from '../../utils/types/transactions/internal/get-transactions-in-period';
+import { GetTransactionsSummary } from '../../utils/types/transactions/internal/get-transactions-summary';
+import { Transaction } from '../../utils/types/transactions/transaction';
+import { TransactionRepository } from '../transaction-repository';
 
 export class InMemoryTransactionRepository implements TransactionRepository {
     public items: Transaction[] = [];
 
-    async create(data: TransactionCreateInput) {
+    async create(data: CreateTransaction) {
         const transaction: Transaction = {
             name: data.name,
             id: randomUUID(),
@@ -27,13 +29,12 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return transaction;
     }
 
-    async getPaginated(data: GetPaginatedTransactionsInternalType) {
+    async getPaginated(data: GetPaginatedTransactionsInternal) {
         const filtered = this.items.filter((item) => {
             const matchesAccount = item.accountId === data.accountId;
             const matchesType = data.type ? item.type === data.type : true;
             const matchesPaymentMethod = data.paymentMethod ? item.paymentMethod === data.paymentMethod : true;
             const matchesName = data.name ? item.name?.toLowerCase().includes(data.name.toLowerCase()) : true;
-            // const notDeleted = item.deleted === false;
 
             return matchesAccount && matchesType && matchesPaymentMethod && matchesName;
         });
@@ -53,7 +54,7 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return transaction ?? null;
     }
 
-    async getInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
+    async getInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternal) {
         const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
         const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
 
@@ -73,7 +74,7 @@ export class InMemoryTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async getSummary({ accountId, year, type }: GetTransactionsSummaryType) {
+    async getSummary({ accountId, year, type }: GetTransactionsSummary) {
 
         const startOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).startOf('year').toJSDate();
         const endOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).endOf('year').toJSDate();

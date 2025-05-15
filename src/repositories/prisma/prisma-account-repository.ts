@@ -1,12 +1,10 @@
 import { prisma } from '../../utils/libs/prisma';
-import { AccountRepository, CreateAccount, UpdateAccountInput } from '../account-repository';
+import { UpdateAccount } from '../../utils/types/account/update-account';
+import { AccountRepository } from '../account-repository';
 
 export class PrismaAccountRepository implements AccountRepository {
-    async create(data: CreateAccount) {
-        const account = await prisma.account.create({
-            data
-        });
-
+    async create(userId: string) {
+        const account = await prisma.account.create({ data: { userId } });
         return account;
     }
 
@@ -26,11 +24,9 @@ export class PrismaAccountRepository implements AccountRepository {
         return account;
     }
 
-    async update(data: UpdateAccountInput) {
+    async update(data: UpdateAccount) {
         const account = await prisma.account.update({
-            data: {
-                balance: data.type === 'withdraw' ? { decrement: data.amount } : { increment: data.amount }
-            },
+            data: { balance: data.type === 'withdraw' ? { decrement: data.balance } : { increment: data.balance } },
             where: { id: data.accountId }
         });
 

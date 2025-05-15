@@ -1,21 +1,15 @@
 import { prisma } from '../../utils/libs/prisma';
-import { Bill, BillCreateInput, BillRepository, FindManyBillsInput, FindManyBillsResponse } from '../bill-repository';
+import { Bill } from '../../utils/types/bills/bill';
+import { CreateBill } from '../../utils/types/bills/create-bill';
+import { BillRepository, BillTypeEnum, FindManyBillsInput, FindManyBillsResponse } from '../bill-repository';
 
 export class PrismaBillRepository implements BillRepository {
-    async delete(billId: string) {
-        const bill = await prisma.bill.update({
-            where: {
-                id: billId
-            },
-            data: {
-                deleted: true
-            }
-        });
-
+    async delete(id: string) {
+        const bill = await prisma.bill.update({ where: { id }, data: { deleted: true, active: false } });
         return bill;
     }
 
-    async create(data: BillCreateInput) {
+    async create(data: CreateBill) {
         const bill = await prisma.bill.create({ data });
         return bill;
     }
@@ -52,19 +46,37 @@ export class PrismaBillRepository implements BillRepository {
         return response;
     }
 
-    async payInvoice(paidInstallments: number, billId: string, active: boolean) {
-        const bill = await prisma.bill.update({
-            where: {
-                id: billId
-            },
-            data: {
-                updatedAt: new Date(),
-                paidInstallments: paidInstallments + 1,
-                active
-            }
+    async payBill(bill: Bill) {
+        const result = await prisma.$transaction(async (prisma) => {
+            const billUpdated = await prisma.bill.update({
+                where: { id: bill.id },
+                data: {
+                    updatedAt: new Date(),
+                    paidInstallments: bill.paidInstallments + 1,
+                    active: bill.billType === BillTypeEnum.Installment && (bill.paidInstallments + 1 >= (bill.installments ?? 0)) ? false : true
+                }
+            });
+
+            await prisma.transaction.create({
+                data: {
+                    amount: bill.amount,
+                    name: bill.name,
+                    paymentMethod: 'other',
+                    type: 'withdraw',
+                    accountId: bill.accountId,
+                    description: bill.description
+                }
+            });
+
+            await prisma.account.update({
+                data: { balance: { decrement: bill.amount } },
+                where: { id: bill.accountId }
+            });
+
+            return billUpdated;
         });
 
-        return bill;
+        return result;
     }
 
     async getById(billId: string) {
@@ -105,5 +117,4 @@ export class PrismaBillRepository implements BillRepository {
 
         return response;
     }
-
 }

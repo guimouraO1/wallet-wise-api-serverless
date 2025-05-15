@@ -1,18 +1,18 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
-import { GetPaginatedTransactionsQueryType } from '../../../utils/schemas/request/transactions/get-paginated-transactions.schema';
-import logger from '../../../utils/libs/logger';
-import { AccountIdParamType } from '../../../utils/schemas/request/account/account-id-param.schema';
 import { getTransactionsFactory } from '../../../use-cases/_factories/get-transactions.factory';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import logger from '../../../utils/libs/logger';
+import { AccountIdFromParam } from '../../../utils/types/account/account-id-from-param';
+import { GetPaginatedTransactions } from '../../../utils/types/transactions/get-paginated-transactions';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function getPaginatedTransactions(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Get paginated transactions - User ${request.user.sub}`);
 
-    const data = request.query as GetPaginatedTransactionsQueryType;
-    const { accountId } = request.params as AccountIdParamType;
+    const data = request.query as GetPaginatedTransactions;
+    const { accountId } = request.params as AccountIdFromParam;
 
     const dataFormated = {
         accountId,

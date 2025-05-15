@@ -1,18 +1,19 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import logger from '../../../utils/libs/logger';
-import { CreateBillBodyType } from '../../../utils/schemas/request/bills/create-bill.schema';
-import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import { BillFactory } from '../../../services/factories/bill.factory';
+import { createBillFactory } from '../../../use-cases/_factories/create-bill.factory';
+import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
+import logger from '../../../utils/libs/logger';
+import { CreateBillBody } from '../../../utils/types/bills/create-bill-body';
+
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function createBill(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Initiating create bill - User ${request.user.sub}`);
-    const data = request.body as CreateBillBodyType;
+    const data = request.body as CreateBillBody;
 
     try {
-        const billService = BillFactory();
-        await billService.create(data);
+        const billService = createBillFactory();
+        await billService.execute(data);
         logger.info(`${filename} -> Bill created successfully - User ${request.user.sub}`);
 
         reply.status(StatusCodes.CREATED).send({});

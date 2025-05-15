@@ -1,9 +1,10 @@
 import { prisma } from '../../utils/libs/prisma';
-import { UserCreateInput, UsersRepository } from '../users-repository';
+import { CreateUser } from '../../utils/types/user/create-user';
+import { UsersRepository } from '../users-repository';
 
 export class PrismaUsersRepository implements UsersRepository {
     async getById(id: string) {
-        const user = await prisma.user.findUnique({ where: { id }, omit: { password: true }, include: { Account: true } });
+        const user = await prisma.user.findUnique({ where: { id }, include: { Account: true } });
         return user;
     }
 
@@ -12,12 +13,12 @@ export class PrismaUsersRepository implements UsersRepository {
         return user;
     }
 
-    async create(data: UserCreateInput) {
+    async create(data: CreateUser) {
         const result = await prisma.$transaction(async (transaction) => {
             const user = await transaction.user.create({ data });
-            await transaction.account.create({ data: { userId: user.id } });
+            const account = await transaction.account.create({ data: { userId: user.id } });
 
-            return user;
+            return { ...user, Account: [account] };
         });
 
         return result;

@@ -1,10 +1,11 @@
-import { GetPaginatedTransactionsInternalType } from '../../utils/schemas/internal/transactions/get-paginated-transactions.schema';
-import { prisma } from '../../utils/libs/prisma';
-import { Transaction, TransactionCreateInput, TransactionRepository, TransactionsAndCount } from '../transaction-repository';
-import { GetTransactionsInPeriodInternalType } from '../../utils/schemas/internal/transactions/get-transactions-in-period.schema';
 import { DateTime } from 'luxon';
 import { TIMEZONE } from '../../utils/constants/timezone';
-import { GetTransactionsSummaryType } from '../../utils/schemas/internal/transactions/get-transactions-summary.schema';
+import { prisma } from '../../utils/libs/prisma';
+import { CreateTransaction } from '../../utils/types/transactions/create-transaction';
+import { GetPaginatedTransactionsInternal } from '../../utils/types/transactions/internal/get-paginated-transactions';
+import { GetTransactionsInPeriodInternal } from '../../utils/types/transactions/internal/get-transactions-in-period';
+import { GetTransactionsSummary } from '../../utils/types/transactions/internal/get-transactions-summary';
+import { TransactionRepository } from '../transaction-repository';
 
 export class PrismaTransactionRepository implements TransactionRepository {
     async getById(transactionId: string) {
@@ -15,7 +16,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return transaction;
     }
 
-    async getPaginated(data: GetPaginatedTransactionsInternalType) {
+    async getPaginated(data: GetPaginatedTransactionsInternal) {
         const whereClause = {
             accountId: data.accountId,
             deleted: false,
@@ -24,7 +25,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
             ...(data.name ? { name: { contains: data.name, mode: 'insensitive' as const } } : {})
         };
 
-        const transactions: Transaction[] = await prisma.transaction.findMany({
+        const transactions = await prisma.transaction.findMany({
             where: whereClause,
             skip: (data.page - 1) * data.offset,
             take: data.offset,
@@ -37,7 +38,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
             where: whereClause
         });
 
-        const response: TransactionsAndCount = {
+        const response = {
             transactionsCount: count,
             transactions
         };
@@ -45,7 +46,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async getInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternalType) {
+    async getInPeriod({ accountId, startDate, endDate, type }: GetTransactionsInPeriodInternal) {
         const startDateFormated = DateTime.fromFormat(startDate, 'dd-MM-yyyy', { zone: TIMEZONE }).startOf('day').toJSDate();
         const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
 
@@ -59,7 +60,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
             }
         };
 
-        const transactions: Transaction[] = await prisma.transaction.findMany({
+        const transactions = await prisma.transaction.findMany({
             where: whereClause,
             orderBy: {
                 createdAt: 'desc'
@@ -70,7 +71,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
             where: whereClause
         });
 
-        const response: TransactionsAndCount = {
+        const response = {
             transactionsCount: count,
             transactions
         };
@@ -78,7 +79,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return response;
     }
 
-    async create(data: TransactionCreateInput) {
+    async create(data: CreateTransaction) {
         const result = await prisma.$transaction(async (prisma) => {
             const transaction = await prisma.transaction.create({ data });
             await prisma.account.update({
@@ -103,7 +104,7 @@ export class PrismaTransactionRepository implements TransactionRepository {
         return transaction;
     }
 
-    async getSummary({ accountId, year, type }: GetTransactionsSummaryType) {
+    async getSummary({ accountId, year, type }: GetTransactionsSummary) {
         const startOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).startOf('year').toJSDate();
         const endOfYear = DateTime.fromObject({ year: Number(year) }, { zone: TIMEZONE }).endOf('year').toJSDate();
 

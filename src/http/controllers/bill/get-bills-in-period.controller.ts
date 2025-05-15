@@ -1,22 +1,22 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
+import { getBillsInPeriodFactory } from '../../../use-cases/_factories/get-bills-in-period.factory';
 import { AccountNotFoundError } from '../../../utils/errors/account-not-found-error';
 import logger from '../../../utils/libs/logger';
-import { AccountIdParamType } from '../../../utils/schemas/request/account/account-id-param.schema';
-import { BillFactory } from '../../../services/factories/bill.factory';
-import { GetBillsInPeriodQueryType } from '../../../utils/schemas/request/bills/get-bills-in-period.schema';
+import { AccountIdFromParam } from '../../../utils/types/account/account-id-from-param';
+import { GetBillsInPeriodQuery } from '../../../utils/types/bills/get-bills-in-period';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function getBillsInPeriod(request: FastifyRequest, reply: FastifyReply) {
     logger.info(`${filename} -> Get Bills in period - User ${request.user.sub}`);
 
-    const { startDate, endDate } = request.query as GetBillsInPeriodQueryType;
-    const { accountId } = request.params as AccountIdParamType;
+    const { startDate, endDate } = request.query as GetBillsInPeriodQuery;
+    const { accountId } = request.params as AccountIdFromParam;
 
     try {
-        const billService = BillFactory();
-        const bills = await billService.getByAccountIdInPeriod(accountId, startDate, endDate);
+        const billService = getBillsInPeriodFactory();
+        const bills = await billService.execute(accountId, startDate, endDate);
         logger.info(`${filename} -> Get Bills in period successfully - User ${request.user.sub}`);
 
         reply.status(StatusCodes.OK).send(bills);

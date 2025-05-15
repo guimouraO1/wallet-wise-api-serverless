@@ -1,15 +1,15 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { UserAlreadyExistsError } from '../../../utils/errors/user-already-exists-error';
-import { CreateUserBodyType } from '../../../utils/schemas/request/user/create-user.schema';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../../utils/libs/logger';
 import { createUserFactory } from '../../../use-cases/_factories/create-user.factory';
 import { CreateUserError } from '../../../utils/errors/create-user-error';
+import { UserAlreadyExistsError } from '../../../utils/errors/user-already-exists-error';
+import logger from '../../../utils/libs/logger';
+import { CreateUser } from '../../../utils/types/user/create-user';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function createUser(request: FastifyRequest, reply: FastifyReply) {
-    const data = request.body as CreateUserBodyType;
+    const data = request.body as CreateUser;
     logger.info(`${filename} -> Initiating user creation for email: ${data.email}`);
 
     try {

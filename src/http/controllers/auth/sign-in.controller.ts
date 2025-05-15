@@ -1,16 +1,16 @@
-import { FastifyRequest, FastifyReply } from 'fastify';
-import { InvalidCredentialsError } from '../../../utils/errors/invalid-credentials-error';
-import { env } from '../../../utils/libs/env';
-import { SignInBodyType } from '../../../utils/schemas/request/auth/sign-in.schema';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { StatusCodes } from 'http-status-codes';
-import logger from '../../../utils/libs/logger';
 import { signInFactory } from '../../../use-cases/_factories/sign-in.factory';
+import { InvalidCredentialsError } from '../../../utils/errors/invalid-credentials-error';
 import { UserNotFoundError } from '../../../utils/errors/user-not-found-error';
+import { env } from '../../../utils/libs/env';
+import logger from '../../../utils/libs/logger';
+import { SignIn } from '../../../utils/types/auth/sign-in';
 
 const filename = __filename.split(/[/\\]/).pop();
 
 export async function signIn(request: FastifyRequest, reply: FastifyReply) {
-    const { email, password } = request.body as SignInBodyType;
+    const { email, password } = request.body as SignIn;
     logger.info(`${filename} -> Initiating sign-in process for email: ${email}`);
 
     try {
