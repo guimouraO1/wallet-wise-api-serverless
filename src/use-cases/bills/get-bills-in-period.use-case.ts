@@ -17,7 +17,6 @@ export class GetBillsInPeriodUseCase {
         const endDateFormated = DateTime.fromFormat(endDate, 'dd-MM-yyyy', { zone: TIMEZONE }).endOf('day').toJSDate();
 
         const bills = await this.billRepository.getByAccountIdInPeriod(accountId, startDateFormated, endDateFormated);
-        console.log(bills);
         return bills;
     }
 }

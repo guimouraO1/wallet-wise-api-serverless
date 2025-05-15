@@ -1,7 +1,7 @@
 import { prisma } from '../../utils/libs/prisma';
-import { Bill } from '../../utils/types/bills/bill';
+import { Bill, BillTypeEnum } from '../../utils/types/bills/bill';
 import { CreateBill } from '../../utils/types/bills/create-bill';
-import { BillRepository, BillTypeEnum, FindManyBillsInput, FindManyBillsResponse } from '../bill-repository';
+import { BillRepository, FindManyBillsInput, FindManyBillsResponse } from '../bill-repository';
 
 export class PrismaBillRepository implements BillRepository {
     async delete(id: string) {
