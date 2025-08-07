@@ -122,4 +122,4 @@ This project is licensed under the **ISC License**.
 
 ## 👤 Author
 
-Guilherme de Moura Oliveira - 2025
+Guilherme de Moura Oliveira - 2026
